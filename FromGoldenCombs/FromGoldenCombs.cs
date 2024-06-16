@@ -34,6 +34,7 @@ namespace FromGoldenCombs
             api.RegisterBlockEntityClass("belangstrothsuper", typeof(BELangstrothSuper));
             api.RegisterBlockEntityClass("belangstrothstack", typeof(BELangstrothStack));
             api.RegisterBlockEntityClass("beframerack", typeof(BEFrameRack));
+            api.RegisterBlockEntityClass("beframerack2", typeof(BEFrameRack2));
 
             //Blocks
             api.RegisterBlockClass("ceramicbroodpot", typeof(CeramicBroodPot));
@@ -44,6 +45,7 @@ namespace FromGoldenCombs
             api.RegisterBlockClass("langstrothbase", typeof(LangstrothBase));
             api.RegisterBlockClass("langstrothstack", typeof(LangstrothStack));
             api.RegisterBlockClass("framerack", typeof(FrameRack));
+            api.RegisterBlockClass("framerack2", typeof(FrameRack2));
 
             //Items
             api.RegisterItemClass("langstrothpartcore", typeof(LangstrothPartCore));

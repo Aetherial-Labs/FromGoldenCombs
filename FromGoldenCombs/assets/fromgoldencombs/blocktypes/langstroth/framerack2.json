@@ -1,0 +1,99 @@
+{
+  "code": "framerack2",
+  "class": "framerack2",
+  "entityClass": "beframerack2",
+  "storageFlags": 2,
+  "maxstacksize": 1,
+  "heldTpIdleAnimation": "holdbothhandslarge",
+  "heldTpUseAnimation": "twohandplaceblock",
+  "behaviors": [
+    { "name": "HorizontalOrientable", "properties": { "dropBlockFace": "east" }},
+    { "name": "Unstable" }
+  ],
+  "attributes": {
+        handbook: {
+			  groupBy: ["framerack2-*"],
+        "extraSections": [{
+              "title": "fromgoldencombs:block-handbooktitle-framerack",
+              "text": "fromgoldencombs:block-handbooktext-framerack"
+            }]
+        },
+        types: ["normal"],
+		    materials: { loadFromProperties: "block/wood", states: ["aged"] },
+		    shape: { base: "fromgoldencombs:block/hive/langstroth/framerack" },
+		    textures: { 
+			    "primary": { base: "block/wood/debarked/{material}"},
+			    "accent": { base: "block/wood/debarked/{material}"}
+            },
+        "selectionboxes": [
+        { "x1": 0.1878, "y1": 0, "z1": 0.25, "x2": 0.2503, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.2503, "y1": 0, "z1": 0.25, "x2": 0.3128, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.3128, "y1": 0, "z1": 0.25, "x2": 0.3753, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.3753, "y1": 0, "z1": 0.25, "x2": 0.4378, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.4378, "y1": 0, "z1": 0.25, "x2": 0.5003, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.5003, "y1": 0, "z1": 0.25, "x2": 0.5628, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.5628, "y1": 0, "z1": 0.25, "x2": 0.6253, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.6253, "y1": 0, "z1": 0.25, "x2": 0.6878, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.6878, "y1": 0, "z1": 0.25, "x2": 0.7503, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.7503, "y1": 0, "z1": 0.25, "x2": 0.8128, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.094, "y1": 0, "z1": 0.1575, "x2": 0.9055, "y2": 0.2818, "z2": 0.8425, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}}
+      ]
+  },
+  "shape": { "base": "block/hive/langstroth/framerack"},
+  "lightAbsorption": 1,
+  "sideopaque": { "all": false },
+  "sidesolid": { "all": false },
+  "emitSideAO": { "all": false},
+  "blockmaterial": "Wood",
+  "combustibleProps": {
+		burnTemperature: 600,
+		burnDuration: 35,
+	},
+  "sounds": {
+      "place": "game:block/planks"
+    },
+  "groundTransform": {
+      "scale": 2.01
+    },
+  "fpHandTransform": {
+      "translation": {
+        "x": 0,
+        "y": 0.85,
+        "z": 0
+      },
+      "rotation": {
+        "x": 26,
+        "y": -136,
+        "z": -2
+      },
+      "origin": {
+        "x": 0.2,
+        "y": 0.2,
+        "z": -0.1
+      },
+      "scale": 3.04
+    },
+  "tpHandTransform": {
+      "translation": {
+        "x": -1.2,
+        "y": -0.8,
+        "z": -1.3
+      },
+      "rotation": {
+        "x": 14,
+        "y": 14,
+        "z": -81
+      },
+      "origin": {
+        "x": 0.4,
+        "y": 0.6,
+        "z": 0.85
+      },
+      "scale": 0.56
+    },
+  "collisionboxes": [
+        { "x1": 0.062, "y1": 0.0126, "z1": 0.156, "x2": 0.9254, "y2": 0.3624, "z2": 0.845 }
+
+  ]
+
+}

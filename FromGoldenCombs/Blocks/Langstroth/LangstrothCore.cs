@@ -34,7 +34,7 @@ namespace FromGoldenCombs.Blocks.Langstroth
             return true;
         }
 
-        public bool IsValidLangstroth(Block block)
+        public static bool IsValidLangstroth(Block block)
         {
             if (block is LangstrothCore && !(block is LangstrothBrood))
             {
@@ -47,7 +47,8 @@ namespace FromGoldenCombs.Blocks.Langstroth
         {
             if (this is LangstrothStack)
             return base.GetPlacedBlockName(world, pos);
- 
+
+            if (this is FrameRack2) return "FrameRack2";
             StringBuilder sb = new();
             return base.GetPlacedBlockName(world, pos) + sb.AppendLine() + Lang.Get("fromgoldencombs:getmaterials", this.Variant["primary"].ToString().UcFirst(), this.Variant["accent"].ToString().UcFirst());
         }
