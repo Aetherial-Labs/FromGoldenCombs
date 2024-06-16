@@ -20,10 +20,11 @@
         },
         types: ["normal"],
 		    materials: { loadFromProperties: "block/wood", states: ["aged"] },
+        materials2: { loadFromProperties: "block/wood", states: ["aged"] },
 		    shape: { base: "fromgoldencombs:block/hive/langstroth/framerack" },
 		    textures: { 
 			    "primary": { base: "block/wood/debarked/{material}"},
-			    "accent": { base: "block/wood/debarked/{material}"}
+			    "accent": { base: "block/wood/debarked/{material2}"}
             },
         "selectionboxes": [
         { "x1": 0.1878, "y1": 0, "z1": 0.25, "x2": 0.2503, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},

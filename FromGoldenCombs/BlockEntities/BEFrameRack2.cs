@@ -16,7 +16,7 @@ using Vintagestory;
 namespace FromGoldenCombs.BlockEntities
 {
 
-    class BEFrameRack2 : BlockEntityDisplay, IRotatable
+    class BEFrameRack2 : BlockEntityDisplay
     {
 
         readonly InventoryGeneric inv;
@@ -29,6 +29,8 @@ namespace FromGoldenCombs.BlockEntities
         private string type;
 
         private string material;
+
+        private string material2;
 
         private float[] mat;
 
@@ -43,6 +45,7 @@ namespace FromGoldenCombs.BlockEntities
         public string Type => type;
 
         public string Material => material;
+        public string Material2 => material2;
 
         public BEFrameRack2()
         {
@@ -68,7 +71,7 @@ namespace FromGoldenCombs.BlockEntities
             {
                 if (Api.Side == EnumAppSide.Client)
                 {
-                    mesh = (base.Block as FrameRack2).GetOrCreateMesh(type, material);
+                    mesh = (base.Block as FrameRack2).GetOrCreateMesh(type, material, material2);
                     mat = Matrixf.Create().Translate(0.5f, 0.5f, 0.5f).RotateY(MeshAngleRad)
                         .Translate(-0.5f, -0.5f, -0.5f)
                         .Values;
@@ -121,6 +124,7 @@ namespace FromGoldenCombs.BlockEntities
             base.OnBlockPlaced(byItemStack);
             type = byItemStack?.Attributes.GetString("type");
             material = byItemStack?.Attributes.GetString("material");
+            material2 = byItemStack?.Attributes.GetString("material2");
             initFrameRack();
         }
 
@@ -295,11 +299,10 @@ namespace FromGoldenCombs.BlockEntities
                 float midZ = obj.MidZ;
                 Vec3f vec3f = new Vec3f(midX, midY, midZ);
                 vec3f = new Matrixf().RotateY(MeshAngleRad).TransformVector(vec3f.ToVec4f(0f)).XYZ;
-                tfMatrices[i] = new Matrixf().Translate(vec3f.X, vec3f.Y, vec3f.Z).Translate(0.5f, 0f, 0.5f).RotateY(MeshAngleRad - MathF.PI)
-
-                    .Values;
+                tfMatrices[i] = new Matrixf().Translate(vec3f.X, vec3f.Y, vec3f.Z).Translate(0.5f, 0f, 0.5f).RotateY(MeshAngleRad - MathF.PI).Values;
             }
-            return tfMatrices;
+
+                return tfMatrices;
         }
 
 
@@ -315,6 +318,7 @@ namespace FromGoldenCombs.BlockEntities
             base.ToTreeAttributes(tree);
             tree.SetString("type", type);
             tree.SetString("material", material);
+            tree.SetString("material2", material2);
             tree.SetFloat("meshAngleRad", MeshAngleRad);
             tree.SetBool("usableSlotsDirty", UsableSlots == null);
         }
@@ -324,6 +328,7 @@ namespace FromGoldenCombs.BlockEntities
             base.FromTreeAttributes(tree, worldForResolving);
             type = tree.GetString("type");
             material = tree.GetString("material");
+            material2 = tree.GetString("material2");
             MeshAngleRad = tree.GetFloat("meshAngleRad");
             if (tree.GetBool("usableSlotsDirty"))
             {

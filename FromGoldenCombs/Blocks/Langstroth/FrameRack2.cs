@@ -20,6 +20,8 @@ namespace FromGoldenCombs.Blocks
 
         private string[] materials;
 
+        private string[] materials2;
+
         private Dictionary<string, CompositeTexture> textures;
 
         private Cuboidf[] CollisionBox = new[]{ new Cuboidf(0.062, 0.0126, 0.156, 0.9254, 0.3624, 0.845)};
@@ -45,11 +47,14 @@ namespace FromGoldenCombs.Blocks
             textures = Attributes["textures"].AsObject<Dictionary<string, CompositeTexture>>();
             selectionboxes = Attributes["selectionboxes"].AsObject<Cuboidf[]>();
             RegistryObjectVariantGroup registryObjectVariantGroup = Attributes["materials"].AsObject<RegistryObjectVariantGroup>();
+            RegistryObjectVariantGroup registryObjectVariantGroup2 = Attributes["materials2"].AsObject<RegistryObjectVariantGroup>();
             materials = registryObjectVariantGroup.States;
+            materials2 = registryObjectVariantGroup2.States;
             if (registryObjectVariantGroup.LoadFromProperties != null)
             {
                 StandardWorldProperty standardWorldProperty = api.Assets.TryGet(registryObjectVariantGroup.LoadFromProperties.WithPathPrefixOnce("worldproperties/").WithPathAppendixOnce(".json"))?.ToObject<StandardWorldProperty>();
                 materials = standardWorldProperty.Variants.Select((WorldPropertyVariant p) => p.Code.Path).ToArray().Append(materials);
+                materials2 = standardWorldProperty.Variants.Select((WorldPropertyVariant p) => p.Code.Path).ToArray().Append(materials2);
             }
 
             List<JsonItemStack> list = new ();
@@ -59,13 +64,16 @@ namespace FromGoldenCombs.Blocks
                 string[] array2 = materials;
                 foreach (string text2 in array2)
                 {
+                    string[] array3 = materials2;
+                    foreach (string text3 in array3) { 
                     JsonItemStack jsonItemStack = new JsonItemStack();
                     jsonItemStack.Code = Code;
                     jsonItemStack.Type = EnumItemClass.Block;
-                    jsonItemStack.Attributes = new JsonObject(JToken.Parse("{ \"type\": \"" + text + "\", \"material\": \"" + text2 + "\" }"));
+                    jsonItemStack.Attributes = new JsonObject(JToken.Parse("{ \"type\": \"" + text + "\", \"material\": \"" + text2 + "\", \"material2\": \"" + text3 + "\" }"));
                     JsonItemStack jsonItemStack2 = jsonItemStack;
                     jsonItemStack2.Resolve(api.World, Code?.ToString() + " type");
                     list.Add(jsonItemStack2);
+                        }
                 }
             }
 
@@ -107,16 +115,16 @@ namespace FromGoldenCombs.Blocks
             return num;
         }
 
-        public virtual MeshData GetOrCreateMesh(string type, string material, ITexPositionSource overrideTexturesource = null)
+        public virtual MeshData GetOrCreateMesh(string type, string material, string material2, ITexPositionSource overrideTexturesource = null)
         {
             Dictionary<string, MeshData> orCreate = ObjectCacheUtil.GetOrCreate(api, "framerackMeshes", () => new Dictionary<string, MeshData>());
             ICoreClientAPI coreClientAPI = api as ICoreClientAPI;
-            string key = type + "-" + material;
+            string key = type + "-" + material + "-" + material2;
             if (overrideTexturesource != null || !orCreate.TryGetValue(key, out var modeldata))
             {
                 modeldata = new MeshData(4, 3);
                 CompositeShape compositeShape = cshape.Clone();
-                compositeShape.Base.Path = compositeShape.Base.Path.Replace("{type}", type).Replace("{material}", material);
+                compositeShape.Base.Path = compositeShape.Base.Path.Replace("{type}", type).Replace("{material}", material).Replace("{material2}", material2);
                 compositeShape.Base.WithPathAppendixOnce(".json").WithPathPrefixOnce("shapes/");
                 Shape shape = coreClientAPI.Assets.TryGet(compositeShape.Base)?.ToObject<Shape>();
                 ITexPositionSource texPositionSource = overrideTexturesource;
@@ -127,7 +135,7 @@ namespace FromGoldenCombs.Blocks
                     foreach (KeyValuePair<string, CompositeTexture> texture in textures)
                     {
                         CompositeTexture compositeTexture = texture.Value.Clone();
-                        compositeTexture.Base.Path = compositeTexture.Base.Path.Replace("{type}", type).Replace("{material}", material);
+                        compositeTexture.Base.Path = compositeTexture.Base.Path.Replace("{type}", type).Replace("{material}", material).Replace("{material2}", material2);
                         compositeTexture.Bake(coreClientAPI.Assets);
                         shapeTextureSource.textures[texture.Key] = compositeTexture;
                     }
@@ -150,14 +158,14 @@ namespace FromGoldenCombs.Blocks
 
         public override void GetDecal(IWorldAccessor world, BlockPos pos, ITexPositionSource decalTexSource, ref MeshData decalModelData, ref MeshData blockModelData)
         {
-            BlockEntityScrollRack blockEntity = GetBlockEntity<BlockEntityScrollRack>(pos);
+            BEFrameRack2 blockEntity = GetBlockEntity<BEFrameRack2>(pos);
             if (blockEntity != null)
             {
                 float[] values = Matrixf.Create().Translate(0.5f, 0.5f, 0.5f).RotateY(blockEntity.MeshAngleRad)
                     .Translate(-0.5f, -0.5f, -0.5f)
                     .Values;
-                blockModelData = GetOrCreateMesh(blockEntity.Type, blockEntity.Material).Clone().MatrixTransform(values);
-                decalModelData = GetOrCreateMesh(blockEntity.Type, blockEntity.Material, decalTexSource).Clone().MatrixTransform(values);
+                blockModelData = GetOrCreateMesh(blockEntity.Type, blockEntity.Material, blockEntity.Material2).Clone().MatrixTransform(values);
+                decalModelData = GetOrCreateMesh(blockEntity.Type, blockEntity.Material, blockEntity.Material2, decalTexSource).Clone().MatrixTransform(values);
             }
             else
             {
@@ -176,10 +184,11 @@ namespace FromGoldenCombs.Blocks
             Dictionary<string, MultiTextureMeshRef> orCreate = ObjectCacheUtil.GetOrCreate(capi, "FramerackMeshesInventory", () => new Dictionary<string, MultiTextureMeshRef>());
             string @string = itemstack.Attributes.GetString("type", "");
             string string2 = itemstack.Attributes.GetString("material", "");
-            string key = @string + "-" + string2;
+            string string3 = itemstack.Attributes.GetString("material2", "");
+            string key = @string + "-" + string2 + "-" + string3;
             if (!orCreate.TryGetValue(key, out var value))
             {
-                MeshData orCreateMesh = GetOrCreateMesh(@string, string2);
+                MeshData orCreateMesh = GetOrCreateMesh(@string, string2, string3);
                 value = (orCreate[key] = capi.Render.UploadMultiTextureMesh(orCreateMesh));
             }
 
@@ -198,6 +207,7 @@ namespace FromGoldenCombs.Blocks
             {
                 itemStack.Attributes.SetString("type", beFrameRack2.Type);
                 itemStack.Attributes.SetString("material", beFrameRack2.Material);
+                itemStack.Attributes.SetString("material2", beFrameRack2.Material2);
             }
 
             return itemStack;
