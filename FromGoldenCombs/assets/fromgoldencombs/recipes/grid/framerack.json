@@ -1,15 +1,146 @@
 [
-{  "ingredientPattern": "SHS,PAP",  "ingredients": {   "A": {"type": "item", "code": "langstrothside-aged", "quantity": "1",  "states": ["aged"],  "loadFromProperties": "block/wood" },   "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   "S": {"type": "item", "code": "game:stick"}  },  "width": 3,  "height": 2,  "output": { "type": "block", "code": "framerack-{primary}-aged-east"}},
-{  "ingredientPattern": "SHS,PAP",  "ingredients": {   "A": {"type": "item", "code": "langstrothside-acacia", "quantity": "1",  "states": ["aged"],  "loadFromProperties": "block/wood" },   "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   "S": {"type": "item", "code": "game:stick"}  },  "width": 3,  "height": 2,  "output": { "type": "block", "code": "framerack-{primary}-acacia-east"}},
-{  "ingredientPattern": "SHS,PAP",  "ingredients": {   "A": {"type": "item", "code": "langstrothside-birch", "quantity": "1",  "states": ["aged"],  "loadFromProperties": "block/wood" },   "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   "S": {"type": "item", "code": "game:stick"}  },  "width": 3,  "height": 2,  "output": { "type": "block", "code": "framerack-{primary}-birch-east"}},
-{  "ingredientPattern": "SHS,PAP",  "ingredients": {   "A": {"type": "item", "code": "langstrothside-oak", "quantity": "1",  "states": ["aged"],  "loadFromProperties": "block/wood" },   "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   "S": {"type": "item", "code": "game:stick"}  },  "width": 3,  "height": 2,  "output": { "type": "block", "code": "framerack-{primary}-oak-east"}},
-{  "ingredientPattern": "SHS,PAP",  "ingredients": {   "A": {"type": "item", "code": "langstrothside-maple", "quantity": "1",  "states": ["aged"],  "loadFromProperties": "block/wood" },   "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   "S": {"type": "item", "code": "game:stick"}  },  "width": 3,  "height": 2,  "output": { "type": "block", "code": "framerack-{primary}-maple-east"}},
-{  "ingredientPattern": "SHS,PAP",  "ingredients": {   "A": {"type": "item", "code": "langstrothside-pine", "quantity": "1",  "states": ["aged"],  "loadFromProperties": "block/wood" },   "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   "S": {"type": "item", "code": "game:stick"}  },  "width": 3,  "height": 2,  "output": { "type": "block", "code": "framerack-{primary}-pine-east"}},
-{  "ingredientPattern": "SHS,PAP",  "ingredients": {   "A": {"type": "item", "code": "langstrothside-kapok", "quantity": "1",  "states": ["aged"],  "loadFromProperties": "block/wood" },   "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   "S": {"type": "item", "code": "game:stick"}  },  "width": 3,  "height": 2,  "output": { "type": "block", "code": "framerack-{primary}-kapok-east"}},
-{  "ingredientPattern": "SHS,PAP",  "ingredients": {   "A": {"type": "item", "code": "langstrothside-baldcypress", "quantity": "1",  "states": ["aged"],  "loadFromProperties": "block/wood" },   "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   "S": {"type": "item", "code": "game:stick"}  },  "width": 3,  "height": 2,  "output": { "type": "block", "code": "framerack-{primary}-baldcypress-east"}},
-{  "ingredientPattern": "SHS,PAP",  "ingredients": {   "A": {"type": "item", "code": "langstrothside-larch", "quantity": "1",  "states": ["aged"],  "loadFromProperties": "block/wood" },   "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   "S": {"type": "item", "code": "game:stick"}  },  "width": 3,  "height": 2,  "output": { "type": "block", "code": "framerack-{primary}-larch-east"}},
-{  "ingredientPattern": "SHS,PAP",  "ingredients": {   "A": {"type": "item", "code": "langstrothside-redwood", "quantity": "1",  "states": ["aged"],  "loadFromProperties": "block/wood" },   "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   "S": {"type": "item", "code": "game:stick"}  },  "width": 3,  "height": 2,  "output": { "type": "block", "code": "framerack-{primary}-redwood-east"}},
-{  "ingredientPattern": "SHS,PAP",  "ingredients": {   "A": {"type": "item", "code": "langstrothside-ebony", "quantity": "1",  "states": ["aged"],  "loadFromProperties": "block/wood" },   "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   "S": {"type": "item", "code": "game:stick"}  },  "width": 3,  "height": 2,  "output": { "type": "block", "code": "framerack-{primary}-ebony-east"}},
-{  "ingredientPattern": "SHS,PAP",  "ingredients": {   "A": {"type": "item", "code": "langstrothside-walnut", "quantity": "1",  "states": ["aged"],  "loadFromProperties": "block/wood" },   "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   "S": {"type": "item", "code": "game:stick"}  },  "width": 3,  "height": 2,  "output": { "type": "block", "code": "framerack-{primary}-walnut-east"}},
-{  "ingredientPattern": "SHS,PAP",  "ingredients": {   "A": {"type": "item", "code": "langstrothside-purpleheart", "quantity": "1",  "states": ["aged"],  "loadFromProperties": "block/wood" },   "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   "S": {"type": "item", "code": "game:stick"}  },  "width": 3,  "height": 2,  "output": { "type": "block", "code": "framerack-{primary}-purpleheart-east"}}
+    {  "ingredientPattern": "SHS,PAP",  
+       "ingredients": {
+         "A": {"type": "item", "code": "langstrothside-aged", "name": "accent", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   
+         "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   
+         "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },
+         "S": {"type": "item", "code": "game:stick"}  
+
+       },
+       "width": 3,  "height": 2,
+       "output": { "type": "block", "code": "framerack", quantity: "1", attributes:{"type": "normal", "material": "{primary}", "material2": "aged"}  }
+    },
+    {  "ingredientPattern": "SHS,PAP",  
+       "ingredients": {
+         "A": {"type": "item", "code": "langstrothside-walnut", "name": "accent", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   
+         "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   
+         "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },
+         "S": {"type": "item", "code": "game:stick"}  
+
+       },
+       "width": 3,  "height": 2,
+       "output": { "type": "block", "code": "framerack", quantity: "1", attributes:{"type": "normal", "material": "{primary}", "material2": "walnut"}  }
+    },
+    {  "ingredientPattern": "SHS,PAP",  
+       "ingredients": {
+         "A": {"type": "item", "code": "langstrothside-ebony", "name": "accent", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   
+         "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   
+         "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },
+         "S": {"type": "item", "code": "game:stick"}  
+
+       },
+       "width": 3,  "height": 2,
+       "output": { "type": "block", "code": "framerack", quantity: "1", attributes:{"type": "normal", "material": "{primary}", "material2": "ebony"}  }
+    },
+    {  "ingredientPattern": "SHS,PAP",  
+       "ingredients": {
+         "A": {"type": "item", "code": "langstrothside-redwood", "name": "accent", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   
+         "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   
+         "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },
+         "S": {"type": "item", "code": "game:stick"}  
+
+       },
+       "width": 3,  "height": 2,
+       "output": { "type": "block", "code": "framerack", quantity: "1", attributes:{"type": "normal", "material": "{primary}", "material2": "redwood"}  }
+    },
+    {  "ingredientPattern": "SHS,PAP",  
+       "ingredients": {
+         "A": {"type": "item", "code": "langstrothside-larch", "name": "accent", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   
+         "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   
+         "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },
+         "S": {"type": "item", "code": "game:stick"}  
+
+       },
+       "width": 3,  "height": 2,
+       "output": { "type": "block", "code": "framerack", quantity: "1", attributes:{"type": "normal", "material": "{primary}", "material2": "larch"}  }
+    },
+    {  "ingredientPattern": "SHS,PAP",  
+       "ingredients": {
+         "A": {"type": "item", "code": "langstrothside-baldcypress", "name": "accent", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   
+         "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   
+         "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },
+         "S": {"type": "item", "code": "game:stick"}  
+
+       },
+       "width": 3,  "height": 2,
+       "output": { "type": "block", "code": "framerack", quantity: "1", attributes:{"type": "normal", "material": "{primary}", "material2": "baldcypress"}  }
+    },
+    {  "ingredientPattern": "SHS,PAP",  
+       "ingredients": {
+         "A": {"type": "item", "code": "langstrothside-kapok", "name": "accent", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   
+         "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   
+         "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },
+         "S": {"type": "item", "code": "game:stick"}  
+
+       },
+       "width": 3,  "height": 2,
+       "output": { "type": "block", "code": "framerack", quantity: "1", attributes:{"type": "normal", "material": "{primary}", "material2": "kapok"}  }
+    },
+    {  "ingredientPattern": "SHS,PAP",  
+       "ingredients": {
+         "A": {"type": "item", "code": "langstrothside-acacia", "name": "accent", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   
+         "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   
+         "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },
+         "S": {"type": "item", "code": "game:stick"}  
+
+       },
+       "width": 3,  "height": 2,
+       "output": { "type": "block", "code": "framerack", quantity: "1", attributes:{"type": "normal", "material": "{primary}", "material2": "acacia"}  }
+    },
+    {  "ingredientPattern": "SHS,PAP",  
+       "ingredients": {
+         "A": {"type": "item", "code": "langstrothside-pine", "name": "accent", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   
+         "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   
+         "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },
+         "S": {"type": "item", "code": "game:stick"}  
+
+       },
+       "width": 3,  "height": 2,
+       "output": { "type": "block", "code": "framerack", quantity: "1", attributes:{"type": "normal", "material": "{primary}", "material2": "pine"}  }
+    },
+    {  "ingredientPattern": "SHS,PAP",  
+     "ingredients": {
+       "A": {"type": "item", "code": "langstrothside-maple", "name": "accent", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   
+       "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   
+       "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },
+       "S": {"type": "item", "code": "game:stick"}  
+
+     },
+     "width": 3,  "height": 2,
+     "output": { "type": "block", "code": "framerack", quantity: "1", attributes:{"type": "normal", "material": "{primary}", "material2": "maple"}  }
+     },
+     {  "ingredientPattern": "SHS,PAP",  
+     "ingredients": {
+       "A": {"type": "item", "code": "langstrothside-oak", "name": "accent", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   
+       "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   
+       "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },
+       "S": {"type": "item", "code": "game:stick"}  
+
+     },
+     "width": 3,  "height": 2,
+     "output": { "type": "block", "code": "framerack", quantity: "1", attributes:{"type": "normal", "material": "{primary}", "material2": "oak"}  }
+      },
+    {  "ingredientPattern": "SHS,PAP",  
+   "ingredients": {
+     "A": {"type": "item", "code": "langstrothside-birch", "name": "accent", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   
+     "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   
+     "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },
+     "S": {"type": "item", "code": "game:stick"}  
+
+   },
+   "width": 3,  "height": 2,
+   "output": { "type": "block", "code": "framerack", quantity: "1", attributes:{"type": "normal", "material": "{primary}", "material2": "birch"}  }
+    },
+   {  "ingredientPattern": "SHS,PAP",  
+   "ingredients": {
+     "A": {"type": "item", "code": "langstrothside-purpleheart", "name": "accent", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },   
+     "H": {"type": "item", "code": "game:hammer-*", "isTool": true },   
+     "P": {"type": "item", "code": "langstrothside-*", "name": "primary", "quantity": "1", "states": ["aged"], "loadFromProperties": "block/wood" },
+     "S": {"type": "item", "code": "game:stick"}  
+
+   },
+   "width": 3,  "height": 2,
+   "output": { "type": "block", "code": "framerack", quantity: "1", attributes:{"type": "normal", "material": "{primary}", "material2": "purpleheart"}  }
+    }
 ]
+

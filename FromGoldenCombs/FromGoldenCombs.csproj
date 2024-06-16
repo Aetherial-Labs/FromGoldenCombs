@@ -39,7 +39,7 @@
     <Compile Remove="Blocks\BlockClaypotHive.cs" />
     <Compile Remove="Blocks\BlockHiveTop.cs" />
     <Compile Remove="Blocks\BlockRawClaypotHive .cs" />
-    <None Remove="assets\fromgoldencombs\blocktypes\langstroth\framerack2.json" />
+    <None Remove="assets\fromgoldencombs\blocktypes\langstroth\framerack.json" />
     <None Remove="assets\fromgoldencombs\lang\fr.json" />
     <None Remove="modinfo.json" />
     <Content Include="modinfo.json">
@@ -113,6 +113,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="assets\fromgoldencombs\lang\uk.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="assets\fromgoldencombs\recipes\grid\framerack.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

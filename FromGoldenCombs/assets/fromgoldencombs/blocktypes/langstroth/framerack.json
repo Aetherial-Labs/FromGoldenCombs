@@ -6,6 +6,10 @@
   "maxstacksize": 1,
   "heldTpIdleAnimation": "holdbothhandslarge",
   "heldTpUseAnimation": "twohandplaceblock",
+  "behaviors": [
+    { "name": "HorizontalOrientable", "properties": { "dropBlockFace": "east" }},
+    { "name": "Unstable" }
+  ],
   "attributes": {
         handbook: {
 			  groupBy: ["framerack-*"],
@@ -13,45 +17,39 @@
               "title": "fromgoldencombs:block-handbooktitle-framerack",
               "text": "fromgoldencombs:block-handbooktext-framerack"
             }]
-        }
+        },
+        types: ["normal"],
+		    materials: { loadFromProperties: "block/wood", states: ["aged"] },
+        materials2: { loadFromProperties: "block/wood", states: ["aged"] },
+		    shape: { base: "fromgoldencombs:block/hive/langstroth/framerack" },
+		    textures: { 
+			    "primary": { base: "block/wood/debarked/{material}"},
+			    "accent": { base: "block/wood/debarked/{material2}"}
+            },
+        "selectionboxes": [
+        { "x1": 0.1878, "y1": 0, "z1": 0.25, "x2": 0.2503, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.2503, "y1": 0, "z1": 0.25, "x2": 0.3128, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.3128, "y1": 0, "z1": 0.25, "x2": 0.3753, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.3753, "y1": 0, "z1": 0.25, "x2": 0.4378, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.4378, "y1": 0, "z1": 0.25, "x2": 0.5003, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.5003, "y1": 0, "z1": 0.25, "x2": 0.5628, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.5628, "y1": 0, "z1": 0.25, "x2": 0.6253, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.6253, "y1": 0, "z1": 0.25, "x2": 0.6878, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.6878, "y1": 0, "z1": 0.25, "x2": 0.7503, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.7503, "y1": 0, "z1": 0.25, "x2": 0.8128, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
+        { "x1": 0.094, "y1": 0, "z1": 0.1575, "x2": 0.9055, "y2": 0.2818, "z2": 0.8425, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}}
+      ]
   },
-  "creativeinventory": { "general": ["framerack-*-east"] },
-  "behaviors": [
-    { "name": "HorizontalOrientable", "properties": { "dropBlockFace": "east" }},
-    { "name": "Unstable" }
-  ],
-  "variantgroups": [
-    { "code": "primary", "states": ["aged"], "loadFromProperties": "block/wood" },
-    { "code": "accent", "states": ["aged"], "loadFromProperties": "block/wood" },
-    { "code": "side", "loadFromProperties": "abstract/horizontalorientation" }
-  ],
-  
-   "textures": {		
-      "primary": { "base": "game:block/wood/debarked/{primary}" },
-			"accent": { "base": "game:block/wood/debarked/{accent}" }
-	},
-  "shapeByType": {
-  "*-north": {
-     "base": "block/hive/langstroth/framerack",
-     "rotateY": 0
-     },
-     "*-east": {
-     "base": "block/hive/langstroth/framerack",
-     "rotateY": 270
-     },
-     "*-south": {
-        "base": "block/hive/langstroth/framerack",
-        "rotateY": 180
-     },
-     "*-west": {
-     "base": "block/hive/langstroth/framerack",
-     "rotateY": 90
-     }
-  },
-  "lightAbsorption": 0,
+  "shape": { "base": "block/hive/langstroth/framerack"},
+  "lightAbsorption": 1,
   "sideopaque": { "all": false },
   "sidesolid": { "all": false },
-  "blockmaterial": "Ceramic",
+  "emitSideAO": { "all": false},
+  "blockmaterial": "Wood",
+  "combustibleProps": {
+		burnTemperature: 600,
+		burnDuration: 35,
+	},
   "sounds": {
       "place": "game:block/planks"
     },
@@ -95,19 +93,8 @@
       "scale": 0.56
     },
   "collisionboxes": [
-        { "x1": 0.062, "y1": 0.0126, "z1": 0.156, "x2": 0.9254, "y2": 0.3624, "z2": 0.845, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west*": 90}}       
-      ],
-  "selectionboxes": [
-        { "x1": 0.1878, "y1": 0, "z1": 0.25, "x2": 0.2503, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.2503, "y1": 0, "z1": 0.25, "x2": 0.3128, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.3128, "y1": 0, "z1": 0.25, "x2": 0.3753, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.3753, "y1": 0, "z1": 0.25, "x2": 0.4378, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.4378, "y1": 0, "z1": 0.25, "x2": 0.5003, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.5003, "y1": 0, "z1": 0.25, "x2": 0.5628, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.5628, "y1": 0, "z1": 0.25, "x2": 0.6253, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.6253, "y1": 0, "z1": 0.25, "x2": 0.6878, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.6878, "y1": 0, "z1": 0.25, "x2": 0.7503, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.7503, "y1": 0, "z1": 0.25, "x2": 0.8128, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.094, "y1": 0, "z1": 0.1575, "x2": 0.9055, "y2": 0.2818, "z2": 0.8425, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}}
-      ]
-  }
+        { "x1": 0.062, "y1": 0.0126, "z1": 0.156, "x2": 0.9254, "y2": 0.3624, "z2": 0.845 }
+
+  ]
+
+}

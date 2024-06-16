@@ -8,8 +8,8 @@
 	"textureSizes": {
 	},
 	"textures": {
-		"primary": "/block/wood/debarked/ebony",
-		"accent": "/block/wood/debarked/aged"
+		"primary": "game:block/wood/debarked/ebony",
+		"accent": "game:block/wood/debarked/aged"
 	},
 	"elements": [
 		{

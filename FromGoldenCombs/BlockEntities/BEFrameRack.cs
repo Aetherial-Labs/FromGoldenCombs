@@ -1,4 +1,6 @@
 ﻿using FromGoldenCombs.config;
+using System.Collections.Generic;
+using System;
 using System.Text;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
@@ -7,39 +9,146 @@ using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Util;
 using Vintagestory.GameContent;
+using FromGoldenCombs.Blocks;
+using System.Diagnostics;
+using Vintagestory;
 
 namespace FromGoldenCombs.BlockEntities
 {
-    
+
     class BEFrameRack : BlockEntityDisplay
     {
-
         readonly InventoryGeneric inv;
-        public override InventoryBase Inventory => inv;
-
         public override string InventoryClassName => "framerack";
 
-        Block block;
+        private Block block;
+        public override InventoryBase Inventory => inv;
+        private MeshData mesh;
+
+        private string type;
+
+        private string material;
+
+        private string material2;
+
+        private float[] mat;
+
+        private int[] UsableSlots;
+
+        private Cuboidf[] UsableSelectionBoxes;
+
+        public override string AttributeTransformCode => "onframerackTransform";
+
+        public float MeshAngleRad { get; set; }
+
+        public string Type => type;
+
+        public string Material => material;
+        public string Material2 => material2;
 
         public BEFrameRack()
         {
             inv = new InventoryGeneric(10, "frameslot-0", null, null);
         }
 
+        public string getMaterial()
+        {
+            return material;
+        }
+
+        public string getMaterial2()
+        {
+            return material2;
+        }
+
         public override void Initialize(ICoreAPI api)
         {
-         
+
             block = api.World.BlockAccessor.GetBlock(Pos, 0);
             base.Initialize(api);
+            if (mesh == null && type != null)
+            {
+                initFrameRack();
+            }
+        }
+
+        private void initFrameRack()
+        {
+            if (Api != null && type != null && base.Block is FrameRack)
+            {
+                if (Api.Side == EnumAppSide.Client)
+                {
+                    mesh = (base.Block as FrameRack).GetOrCreateMesh(type, material, material2);
+                    mat = Matrixf.Create().Translate(0.5f, 0.5f, 0.5f).RotateY(MeshAngleRad)
+                        .Translate(-0.5f, -0.5f, -0.5f)
+                        .Values;
+                }
+
+                if (block is FrameRack)
+                {
+                    type = "normal";
+                }
+            }
+        }
+
+        public int[] getOrCreateUsableSlots()
+        {
+            if (UsableSlots == null)
+            {
+                genUsableSlots();
+            }
+
+            return UsableSlots;
+        }
+
+        private void genUsableSlots()
+        {
+            bool num = isRack(BEBehaviorDoor.getAdjacentOffset(-1, 0, 0, MeshAngleRad, invertHandles: false));
+            int[] slots = (base.Block as FrameRack).slots;
+            List<int> list = new();
+            list.AddRange(slots);
+            UsableSlots = list.ToArray();
+            Cuboidf[] selectionboxes = (base.Block as FrameRack).selectionboxes;
+            UsableSelectionBoxes = new Cuboidf[selectionboxes.Length];
+            for (int i = 0; i < selectionboxes.Length; i++)
+            {
+                UsableSelectionBoxes[i] = selectionboxes[i].RotatedCopy(0f, MeshAngleRad * (180f / MathF.PI), 0f, new Vec3d(0.5, 0.5, 0.5));
+            }
+        }
+
+        private bool isRack(Vec3i offset)
+        {
+            BEFrameRack blockEntity = Api.World.BlockAccessor.GetBlockEntity<BEFrameRack>(Pos.AddCopy(offset));
+            if (blockEntity != null)
+            {
+                return blockEntity.MeshAngleRad == MeshAngleRad;
+            }
+
+            return false;
+        }
+        public override void OnBlockPlaced(ItemStack byItemStack = null)
+        {
+            base.OnBlockPlaced(byItemStack);
+            type = byItemStack?.Attributes.GetString("type");
+            material = byItemStack?.Attributes.GetString("material");
+            material2 = byItemStack?.Attributes.GetString("material2");
+            initFrameRack();
         }
 
         public override void OnBlockBroken(IPlayer byPlayer)
         {
             // Don't drop inventory contents
         }
-        
+
+        public Cuboidf[] getOrCreateSelectionBoxes()
+        {
+            getOrCreateUsableSlots();
+            return UsableSelectionBoxes;
+        }
+
         internal bool OnInteract(IPlayer byPlayer, BlockSelection blockSel)
         {
+            getOrCreateUsableSlots();
             ItemSlot slot = byPlayer.InventoryManager.ActiveHotbarSlot;
             CollectibleObject colObj = slot.Itemstack?.Collectible;
             bool isBeeframe = colObj?.FirstCodePart() == "beeframe";
@@ -111,12 +220,12 @@ namespace FromGoldenCombs.BlockEntities
             for (int i = 0; i < inv.Count; i++)
             {
                 int slotnum = (index + i) % inv.Count;
-                    if (inv[slotnum].Empty)
-                    {
-                        int moved = slot.TryPutInto(Api.World, inv[slotnum]);
-                        updateMeshes();
-                        return moved > 0;
-                    }
+                if (inv[slotnum].Empty)
+                {
+                    int moved = slot.TryPutInto(Api.World, inv[slotnum]);
+                    updateMeshes();
+                    return moved > 0;
+                }
             }
             return false;
         }
@@ -124,7 +233,7 @@ namespace FromGoldenCombs.BlockEntities
         private bool TryTake(IPlayer byPlayer, BlockSelection blockSel)
         {
             int index = blockSel.SelectionBoxIndex;
-            
+
             if (!inv[index].Empty)
             {
                 ItemStack stack = inv[index].TakeOut(1);
@@ -149,7 +258,7 @@ namespace FromGoldenCombs.BlockEntities
         private bool TryHarvest(IWorldAccessor world, IPlayer player, ItemSlot rackStack)
         {
             ThreadSafeRandom rnd = new();
-            
+
             ItemStack stackHandler;
             int durability;
 
@@ -177,7 +286,7 @@ namespace FromGoldenCombs.BlockEntities
             int maxDurability = FromGoldenCombsConfig.Current.baseframedurability;
 
             if (durability == maxDurability)
-            return false;
+                return false;
 
             rackStack.Attributes.SetInt("durability", (maxDurability - durability) < 16 ? maxDurability : durability + 16);
             slot.TakeOut(1);
@@ -185,121 +294,58 @@ namespace FromGoldenCombs.BlockEntities
             return true;
         }
 
-        readonly Matrixf mat = new();
-
-        public Vec3f getTranslation(Block block, int index)
-        {
-            float x = 0f;
-            //float y = 0.069f;
-            //float z = 0f;
-            Vec3f translation = new(0f, 0f, 0f);
-            if (block.Variant["side"] == "north")
-            {
-                translation.X = .7253f + .0625f * index - 1;
-            }
-            else if (block.Variant["side"] == "south")
-            {
-                translation.X = x = 0.2747f - .0625f * index;
-            }
-            else if (block.Variant["side"] == "west")
-            {
-                translation.Z = 0.2747f - .0625f * index;
-            }
-            else if (block.Variant["side"] == "east")
-            {
-                translation.Z = 0.7253f + .0625f * index - 1;
-            }
-            return translation;
-        }
-        protected override MeshData getOrCreateMesh(ItemStack stack, int index)
-        {
-            MeshData mesh = this.getMesh(stack);
-            if (mesh != null)
-            {
-                return mesh;
-            }
-            IContainedMeshSource meshSource = stack.Collectible as IContainedMeshSource;
-            if (meshSource != null)
-            {
-                mesh = meshSource.GenMesh(stack, this.capi.BlockTextureAtlas, this.Pos);
-                mesh.Rotate(new Vec3f(0.5f, 0.5f, 0.5f), 0f, base.Block.Shape.rotateY * 0.017453292f, 0f);
-            }
-            else
-            {
-                ICoreClientAPI capi = this.Api as ICoreClientAPI;
-                if (stack.Class == EnumItemClass.Block)
-                {
-                    mesh = capi.TesselatorManager.GetDefaultBlockMesh(stack.Block).Clone();
-                }
-                else
-                {
-                    this.nowTesselatingObj = stack.Collectible;
-                    this.nowTesselatingShape = null;
-                    CompositeShape shape = stack.Item.Shape;
-                    if (((shape != null) ? shape.Base : null) != null)
-                    {
-                        this.nowTesselatingShape = capi.TesselatorManager.GetCachedShape(stack.Item.Shape.Base);
-                    }
-                    capi.Tesselator.TesselateItem(stack.Item, out mesh, this);
-                    mesh.RenderPassesAndExtraBits.Fill((short)2);
-                }
-            }
-            JsonObject attributes = stack.Collectible.Attributes;
-            if (attributes != null && attributes[this.AttributeTransformCode].Exists)
-            {
-                JsonObject attributes2 = stack.Collectible.Attributes;
-                ModelTransform transform = (attributes2 != null) ? attributes2[this.AttributeTransformCode].AsObject<ModelTransform>(null) : null;
-                transform.EnsureDefaultValues();
-                mesh.ModelTransform(transform);
-            }
-            if (stack.Class == EnumItemClass.Item && (stack.Item.Shape == null || stack.Item.Shape.VoxelizeTexture))
-            {
-                mesh.Rotate(new Vec3f(0.5f, 0.5f, 0.5f), 1.5707964f, 0f, 0f);
-                mesh.Scale(new Vec3f(0.5f, 0.5f, 0.5f), 0.33f, 0.33f, 0.33f);
-                mesh.Translate(getTranslation(block, index));
-            }
-            string key = this.getMeshCacheKey(stack);
-            this.MeshCache[key] = mesh;
-            return mesh;
-        }
-
-
         protected override float[][] genTransformationMatrices()
         {
-            //float x = 0f;
-            //float y = 0.069f;
-            //float z = 0f;
-            float[][] tfMatrices = new float[10][];
-            for (int index = 0; index < 10; index++)
+            tfMatrices = new float[Inventory.Count][];
+            Cuboidf[] selectionBoxes = (base.Block as FrameRack).selectionboxes;
+            for (int i = 0; i < Inventory.Count; i++)
             {
-
-                Vec3f translation = new(0f, 0.069f, 0f);
-
-                if (block.Variant["side"] == "north")
-                {
-                    translation.X = .7253f + .0625f * index - 1;
-                    tfMatrices[index] = new Matrixf().Translate(translation.X, translation.Y, translation.Z).Values;
-                }
-                else if (block.Variant["side"] == "south")
-                {
-                    translation.X = 0.2747f - .0625f * index;
-                    tfMatrices[index] = new Matrixf().Translate(translation.X, translation.Y, translation.Z).Values;
-                }
-                else if (block.Variant["side"] == "west")
-                {
-                    translation.Z = 0.2747f - .0625f * index + 1;
-                    tfMatrices[index] = new Matrixf().Translate(translation.X, translation.Y, translation.Z).RotateYDeg(90).Values;
-                }
-                else if (block.Variant["side"] == "east")
-                {
-
-                    translation.Z = 0.7253f + .0625f * index;
-                    tfMatrices[index] = new Matrixf().Translate(translation.X, translation.Y, translation.Z).RotateYDeg(90).Values;
-                }
-
+                Cuboidf obj = selectionBoxes[i];
+                float midX = obj.MidX;
+                float midY = 0.069f;
+                float midZ = obj.MidZ;
+                Vec3f vec3f = new Vec3f(midX, midY, midZ);
+                vec3f = new Matrixf().RotateY(MeshAngleRad).TransformVector(vec3f.ToVec4f(0f)).XYZ;
+                tfMatrices[i] = new Matrixf().Translate(vec3f.X, vec3f.Y, vec3f.Z).Translate(0.5f, 0f, 0.5f).RotateY(MeshAngleRad - MathF.PI).Values;
             }
-            return tfMatrices;
+
+                return tfMatrices;
         }
+
+
+        public override bool OnTesselation(ITerrainMeshPool mesher, ITesselatorAPI tessThreadTesselator)
+        {
+            mesher.AddMeshData(mesh, mat);
+            base.OnTesselation(mesher, tessThreadTesselator);
+            return true;
+        }
+
+        public override void ToTreeAttributes(ITreeAttribute tree)
+        {
+            base.ToTreeAttributes(tree);
+            tree.SetString("type", type);
+            tree.SetString("material", material);
+            tree.SetString("material2", material2);
+            tree.SetFloat("meshAngleRad", MeshAngleRad);
+            tree.SetBool("usableSlotsDirty", UsableSlots == null);
+        }
+
+        public override void FromTreeAttributes(ITreeAttribute tree, IWorldAccessor worldForResolving)
+        {
+            base.FromTreeAttributes(tree, worldForResolving);
+            type = tree.GetString("type");
+            material = tree.GetString("material");
+            material2 = tree.GetString("material2");
+            MeshAngleRad = tree.GetFloat("meshAngleRad");
+            if (tree.GetBool("usableSlotsDirty"))
+            {
+                UsableSlots = null;
+            }
+
+            initFrameRack();
+            RedrawAfterReceivingTreeAttributes(worldForResolving);
+        }
+
 
         public override void GetBlockInfo(IPlayer forPlayer, StringBuilder sb)
         {
@@ -324,6 +370,12 @@ namespace FromGoldenCombs.BlockEntities
             }
         }
 
+        public void OnTransformed(IWorldAccessor worldAccessor, ITreeAttribute tree, int degreeRotation, Dictionary<int, AssetLocation> oldBlockIdMapping, Dictionary<int, AssetLocation> oldItemIdMapping, EnumAxis? flipAxis)
+        {
+            MeshAngleRad = tree.GetFloat("meshAngleRad");
+            MeshAngleRad -= (float)degreeRotation * (MathF.PI / 180f);
+            tree.SetFloat("meshAngleRad", MeshAngleRad);
+        }
     }
 }
 

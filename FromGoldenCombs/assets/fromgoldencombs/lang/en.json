@@ -22,7 +22,7 @@
   "placeremovepot": "Place or Remove honey pot",
   "emptybagslot": "Pick up in an empty backpack slot",
   "populatedhive":  "Populated Hive",
-
+  "baldcypress": "Bald Cypress",
   //Blocks
   "block-claypothive": "Claypot Hive",
   "fromgoldencombs:handbooktitle-claypothive": "Used for:",
@@ -65,7 +65,7 @@
   "block-langstrothstack-*": "Langstroth Stack",
   "langstrothstack-*-*-hive": "Langstroth Hive",
   "block-langstrothbrood-*": "Langstroth Brood Box",
-  "block-framerack-*": "Frame Rack",
+  "block-framerack": "Frame Rack",
   "game:block-linen-waxed-*": "Waxed Linen",
   "block-rawceramichive": "Raw Ceramic Hive",
   "getmaterials": "Made from {0} and {1}",  

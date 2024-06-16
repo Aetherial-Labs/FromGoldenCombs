@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
@@ -47,10 +48,19 @@ namespace FromGoldenCombs.Blocks.Langstroth
         {
             if (this is LangstrothStack)
             return base.GetPlacedBlockName(world, pos);
-
-            if (this is FrameRack2) return "FrameRack2";
             StringBuilder sb = new();
-            return base.GetPlacedBlockName(world, pos) + sb.AppendLine() + Lang.Get("fromgoldencombs:getmaterials", this.Variant["primary"].ToString().UcFirst(), this.Variant["accent"].ToString().UcFirst());
+            if (this is FrameRack)
+            {
+
+                BEFrameRack be = world.BlockAccessor.GetBlockEntity<BEFrameRack>(pos);
+                if (be != null)
+                {
+                    return Lang.Get(be.getMaterial().UcFirst()) + " & " + Lang.Get(be.getMaterial2().UcFirst()) + sb.AppendLine() + Lang.Get(base.GetPlacedBlockName(world, pos));
+                }
+
+                return null;
+            }
+            return Lang.Get(this.Variant["primary"].ToString().UcFirst()) + " " + Lang.Get(this.Variant["accent"].ToString().UcFirst()) + sb.AppendLine() + base.GetPlacedBlockName(world, pos);
         }
     }
  }
