@@ -62,7 +62,7 @@ namespace FromGoldenCombs.BlockEntities
         {
             return material2;
         }
-
+        
         public override void Initialize(ICoreAPI api)
         {
             block = api.World.BlockAccessor.GetBlock(Pos, 0);
@@ -87,7 +87,7 @@ namespace FromGoldenCombs.BlockEntities
 
                 if (block is LangstrothSuper)
                 {
-                    type = type;
+                    type = "closed";
                 }
             }
         }
@@ -189,13 +189,16 @@ namespace FromGoldenCombs.BlockEntities
                 }
                 if (type == "open" && !byPlayer.Entity.Controls.Sneak)
                 {
+                    
                     type = "closed";
+                    ((LangstrothSuper)block).Shape = ((LangstrothSuper)block).closedshape;
                     base.MarkDirty(true, null);
                     updateMeshes();
                     return true;
                 }
                 if (type == "closed")
                 {
+                    ((LangstrothSuper)block).Shape = ((LangstrothSuper)block).openshape;
                     type = "open";
                     updateMeshes();
                     base.MarkDirty(true, null);
@@ -340,14 +343,6 @@ namespace FromGoldenCombs.BlockEntities
             {
                 ItemSlot slot = inv[index];
                 sb.AppendLine("");
-                if (slot.Empty)
-                {
-                    sb.AppendLine(Lang.Get("Empty"));
-                }
-                else
-                {
-                    sb.AppendLine(slot.Itemstack.GetName());
-                }
             }
         }
     }

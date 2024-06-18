@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
+using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Util;
@@ -25,8 +26,8 @@ namespace FromGoldenCombs.Blocks
 
         private Dictionary<string, CompositeTexture> textures;
 
-        private CompositeShape closedshape;
-        private CompositeShape openshape;
+        public CompositeShape closedshape { get; set; }
+        public CompositeShape openshape { get; set; } 
 
         private Cuboidf[] CollisionBox = new[] { new Cuboidf(0.062, 0.0126, 0.156, 0.9254, 0.3624, 0.845) };
 
@@ -41,6 +42,8 @@ namespace FromGoldenCombs.Blocks
             LoadTypes();
         }
 
+        
+
         public override bool OnBlockInteractStart(IWorldAccessor world, IPlayer byPlayer, BlockSelection blockSel)
         {
             if (!(byPlayer.InventoryManager.ActiveHotbarSlot.Itemstack?.Block is LangstrothCore))
@@ -53,8 +56,8 @@ namespace FromGoldenCombs.Blocks
         public void LoadTypes()
         {
             types = Attributes["types"].AsArray<string>();
-            closedshape = Attributes["shape"].AsObject<CompositeShape>();
-            openshape = Attributes["shape"].AsObject<CompositeShape>();
+            closedshape = Attributes["closedshape"].AsObject<CompositeShape>();
+            openshape = Attributes["openshape"].AsObject<CompositeShape>();
             textures = Attributes["textures"].AsObject<Dictionary<string, CompositeTexture>>();
             openselectionboxes = Attributes["openselectionboxes"].AsObject<Cuboidf[]>();
             closedselectionboxes = Attributes["closedselectionboxes"].AsObject<Cuboidf[]>();
@@ -99,7 +102,7 @@ namespace FromGoldenCombs.Blocks
             }
             };
         }
-
+        
         public override Cuboidf[] GetSelectionBoxes(IBlockAccessor blockAccessor, BlockPos pos)
         {
             return GetBlockEntity<BELangstrothSuper>(pos)?.getOrCreateSelectionBoxes() ?? base.GetSelectionBoxes(blockAccessor, pos);
@@ -225,8 +228,12 @@ namespace FromGoldenCombs.Blocks
             StringBuilder sb = new();
             Block block = world.BlockAccessor.GetBlock(pos);
             BELangstrothSuper be = world.BlockAccessor.GetBlockEntity<BELangstrothSuper>(pos);
-            //return Lang.Get(be.getMaterial().UcFirst()) + " & " + Lang.Get(be.getMaterial2().UcFirst() + sb.AppendLine() + OnPickBlock(world, pos)?.GetName());
-            return null;
+
+            if (be == null) return null;
+            return Lang.Get(be.getMaterial().UcFirst()) + " & " + Lang.Get(be.getMaterial2().UcFirst() + sb.AppendLine() + OnPickBlock(world, pos)?.GetName());
+            
+            
+            
         }
 
         public override WorldInteraction[] GetPlacedBlockInteractionHelp(IWorldAccessor world, BlockSelection selection, IPlayer forPlayer)

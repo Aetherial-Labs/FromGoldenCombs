@@ -249,6 +249,7 @@ namespace VFromGoldenCombs.Blocks.Langstroth
             StringBuilder sb = new();
             Block block = world.BlockAccessor.GetBlock(pos);
             BELangstrothBase be = world.BlockAccessor.GetBlockEntity<BELangstrothBase>(pos);
+            if (be == null) return null;
             return Lang.Get(be.getMaterial().UcFirst()) + " & " + Lang.Get(be.getMaterial2().UcFirst() + sb.AppendLine() + OnPickBlock(world, pos)?.GetName());
         }
     }

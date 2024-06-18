@@ -18,7 +18,8 @@
         types: ["open","closed"],
 		    materials: { loadFromProperties: "block/wood", states: ["aged"] },
         materials2: { loadFromProperties: "block/wood", states: ["aged"] },
-		    shape: { base: "fromgoldencombs:block/hive/langstroth/langstrothsuper-closed" },
+		    closedshape: { base: "fromgoldencombs:block/hive/langstroth/langstrothsuper-closed" },
+        openshape: { base: "fromgoldencombs:block/hive/langstroth/langstrothsuper-open" },
 		    textures: { 
 			    "primary": { base: "block/wood/debarked/{material}"},
 			    "accent": { base: "block/wood/debarked/{material2}"}

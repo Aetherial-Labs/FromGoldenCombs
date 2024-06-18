@@ -251,6 +251,7 @@ namespace FromGoldenCombs.Blocks
             StringBuilder sb = new();
             Block block = world.BlockAccessor.GetBlock(pos);
             BEFrameRack be = world.BlockAccessor.GetBlockEntity<BEFrameRack>(pos);
+            if (be == null) return null;
             return Lang.Get(be.getMaterial().UcFirst()) + " & " + Lang.Get(be.getMaterial2().UcFirst() + sb.AppendLine() +  OnPickBlock(world, pos)?.GetName());
         }
     }
