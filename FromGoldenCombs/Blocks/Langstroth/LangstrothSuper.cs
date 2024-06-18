@@ -1,18 +1,20 @@
-﻿using FromGoldenCombs.BlockEntities;
+﻿
+using FromGoldenCombs.BlockEntities;
 using FromGoldenCombs.Blocks.Langstroth;
+using HarmonyLib;
 using Newtonsoft.Json.Linq;
-using System;
+using static OpenTK.Graphics.OpenGL.GL;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using System;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
-using Vintagestory.API.Config;
-using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Util;
 using Vintagestory.GameContent;
 using Vintagestory.ServerMods;
+using System.Linq;
+using Vintagestory.API.Datastructures;
 
 namespace FromGoldenCombs.Blocks
 {
@@ -26,8 +28,8 @@ namespace FromGoldenCombs.Blocks
 
         private Dictionary<string, CompositeTexture> textures;
 
-        public CompositeShape closedshape { get; set; }
-        public CompositeShape openshape { get; set; } 
+        private CompositeShape closedshape;
+        private CompositeShape openshape;
 
         private Cuboidf[] CollisionBox = new[] { new Cuboidf(0.062, 0.0126, 0.156, 0.9254, 0.3624, 0.845) };
 
@@ -41,8 +43,6 @@ namespace FromGoldenCombs.Blocks
             base.OnLoaded(api);
             LoadTypes();
         }
-
-        
 
         public override bool OnBlockInteractStart(IWorldAccessor world, IPlayer byPlayer, BlockSelection blockSel)
         {
@@ -102,7 +102,7 @@ namespace FromGoldenCombs.Blocks
             }
             };
         }
-        
+
         public override Cuboidf[] GetSelectionBoxes(IBlockAccessor blockAccessor, BlockPos pos)
         {
             return GetBlockEntity<BELangstrothSuper>(pos)?.getOrCreateSelectionBoxes() ?? base.GetSelectionBoxes(blockAccessor, pos);
@@ -139,7 +139,7 @@ namespace FromGoldenCombs.Blocks
             if (overrideTexturesource != null || !orCreate.TryGetValue(key, out var modeldata))
             {
                 modeldata = new MeshData(4, 3);
-                CompositeShape compositeShape = type == "closed"?closedshape.Clone():openshape.Clone();
+                CompositeShape compositeShape = type == "closed" ? closedshape.Clone() : openshape.Clone();
                 compositeShape.Base.Path = compositeShape.Base.Path.Replace("{type}", type).Replace("{material}", material).Replace("{material2}", material2);
                 compositeShape.Base.WithPathAppendixOnce(".json").WithPathPrefixOnce("shapes/");
                 Shape shape = coreClientAPI.Assets.TryGet(compositeShape.Base)?.ToObject<Shape>();
@@ -228,17 +228,13 @@ namespace FromGoldenCombs.Blocks
             StringBuilder sb = new();
             Block block = world.BlockAccessor.GetBlock(pos);
             BELangstrothSuper be = world.BlockAccessor.GetBlockEntity<BELangstrothSuper>(pos);
-
-            if (be == null) return null;
-            return Lang.Get(be.getMaterial().UcFirst()) + " & " + Lang.Get(be.getMaterial2().UcFirst() + sb.AppendLine() + OnPickBlock(world, pos)?.GetName());
-            
-            
-            
+            //return Lang.Get(be.getMaterial().UcFirst()) + " & " + Lang.Get(be.getMaterial2().UcFirst() + sb.AppendLine() + OnPickBlock(world, pos)?.GetName());
+            return null;
         }
 
         public override WorldInteraction[] GetPlacedBlockInteractionHelp(IWorldAccessor world, BlockSelection selection, IPlayer forPlayer)
         {
-           
+
             WorldInteraction[] wi;
             WorldInteraction[] wi2 = null;
             WorldInteraction[] wi3 = null;
@@ -260,7 +256,6 @@ namespace FromGoldenCombs.Blocks
             {
                 wi2 = ObjectCacheUtil.GetOrCreate(api, "superInteractions2", () =>
                 {
-
                     return new WorldInteraction[] {
                             new WorldInteraction() {
                                     ActionLangCode = "fromgoldencombs:blockhelp-langstrothsuper-open",
@@ -275,7 +270,6 @@ namespace FromGoldenCombs.Blocks
             {
                 wi2 = ObjectCacheUtil.GetOrCreate(api, "superInteractions3", () =>
                 {
-
                     return new WorldInteraction[] {
                             new WorldInteraction() {
                                     ActionLangCode = "fromgoldencombs:blockhelp-langstrothsuper-closed",
@@ -312,7 +306,8 @@ namespace FromGoldenCombs.Blocks
             if (wi2 == null || wi3 == null)
             {
                 return wi;
-            } else if (wi3 == null)
+            }
+            else if (wi3 == null)
             {
                 return wi.Append(wi2);
             }

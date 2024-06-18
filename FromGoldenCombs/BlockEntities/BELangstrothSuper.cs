@@ -1,14 +1,14 @@
-﻿using FromGoldenCombs.Blocks;
-using FromGoldenCombs.Items;
-using System;
+﻿
+using FromGoldenCombs.Blocks;
+using static OpenTK.Graphics.OpenGL.GL;
 using System.Collections.Generic;
 using System.Text;
+using System;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
-using Vintagestory.API.Util;
 using Vintagestory.GameContent;
 
 namespace FromGoldenCombs.BlockEntities
@@ -16,7 +16,7 @@ namespace FromGoldenCombs.BlockEntities
     //TODO: Consider adding a lid object, or adding an animation showing the lid being slid off (This sounds neat). 
     //TODO: Find out how to get animation functioning
     //TODO: Fix selection box issue
-    
+
     class BELangstrothSuper : BlockEntityDisplay
     {
 
@@ -62,7 +62,7 @@ namespace FromGoldenCombs.BlockEntities
         {
             return material2;
         }
-        
+
         public override void Initialize(ICoreAPI api)
         {
             block = api.World.BlockAccessor.GetBlock(Pos, 0);
@@ -87,7 +87,7 @@ namespace FromGoldenCombs.BlockEntities
 
                 if (block is LangstrothSuper)
                 {
-                    type = "closed";
+                    type = type;
                 }
             }
         }
@@ -107,7 +107,7 @@ namespace FromGoldenCombs.BlockEntities
             List<int> list = new();
             list.AddRange(slots);
             UsableSlots = list.ToArray();
-            Cuboidf[] selectionboxes = type=="open"?(base.Block as LangstrothSuper).openselectionboxes: (base.Block as LangstrothSuper).closedselectionboxes;
+            Cuboidf[] selectionboxes = type == "open" ? (base.Block as LangstrothSuper).openselectionboxes : (base.Block as LangstrothSuper).closedselectionboxes;
             UsableSelectionBoxes = new Cuboidf[selectionboxes.Length];
             for (int i = 0; i < selectionboxes.Length; i++)
             {
@@ -189,16 +189,13 @@ namespace FromGoldenCombs.BlockEntities
                 }
                 if (type == "open" && !byPlayer.Entity.Controls.Sneak)
                 {
-                    
                     type = "closed";
-                    ((LangstrothSuper)block).Shape = ((LangstrothSuper)block).closedshape;
                     base.MarkDirty(true, null);
                     updateMeshes();
                     return true;
                 }
                 if (type == "closed")
                 {
-                    ((LangstrothSuper)block).Shape = ((LangstrothSuper)block).openshape;
                     type = "open";
                     updateMeshes();
                     base.MarkDirty(true, null);
@@ -229,7 +226,7 @@ namespace FromGoldenCombs.BlockEntities
         private bool TryTake(IPlayer byPlayer, BlockSelection blockSel)
         {
             int index = blockSel.SelectionBoxIndex;
-            
+
             if (!inv[index].Empty)
             {
                 ItemStack stack = inv[index].TakeOut(1);
@@ -254,8 +251,8 @@ namespace FromGoldenCombs.BlockEntities
         protected override float[][] genTransformationMatrices()
         {
             tfMatrices = new float[Inventory.Count][];
-            Cuboidf[] selectionBoxes = type == "open"?(base.Block as LangstrothSuper).openselectionboxes : (base.Block as LangstrothSuper).closedselectionboxes;
-            for (int i = 0; i < selectionBoxes.Length-1; i++)
+            Cuboidf[] selectionBoxes = type == "open" ? (base.Block as LangstrothSuper).openselectionboxes : (base.Block as LangstrothSuper).closedselectionboxes;
+            for (int i = 0; i < selectionBoxes.Length - 1; i++)
             {
                 Cuboidf obj = selectionBoxes[i];
                 float midX = obj.MidX;
@@ -301,7 +298,7 @@ namespace FromGoldenCombs.BlockEntities
             RedrawAfterReceivingTreeAttributes(worldForResolving);
         }
 
-        
+
 
         public void OnTransformed(IWorldAccessor worldAccessor, ITreeAttribute tree, int degreeRotation, Dictionary<int, AssetLocation> oldBlockIdMapping, Dictionary<int, AssetLocation> oldItemIdMapping, EnumAxis? flipAxis)
         {
@@ -323,7 +320,7 @@ namespace FromGoldenCombs.BlockEntities
             }
             else if (index == 10)
             {
-                
+
                 sb.AppendLine("");
                 for (int i = 0; i < 10; i++)
                 {
@@ -334,7 +331,7 @@ namespace FromGoldenCombs.BlockEntities
                     }
                     else
                     {
-                        
+
                         sb.AppendLine(slot.Itemstack.GetName());
                     }
                 }
@@ -343,8 +340,15 @@ namespace FromGoldenCombs.BlockEntities
             {
                 ItemSlot slot = inv[index];
                 sb.AppendLine("");
+                if (slot.Empty)
+                {
+                    sb.AppendLine(Lang.Get("Empty"));
+                }
+                else
+                {
+                    sb.AppendLine(slot.Itemstack.GetName());
+                }
             }
         }
     }
 }
-
