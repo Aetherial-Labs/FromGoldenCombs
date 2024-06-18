@@ -1,5 +1,7 @@
-﻿using FromGoldenCombs.Items;
+﻿using FromGoldenCombs.Blocks;
+using FromGoldenCombs.Items;
 using System;
+using System.Collections.Generic;
 using System.Text;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
@@ -19,43 +21,126 @@ namespace FromGoldenCombs.BlockEntities
     {
 
         readonly InventoryGeneric inv;
-        public override InventoryBase Inventory => inv;
-
         public override string InventoryClassName => "langstrothsuper";
 
-        Block block;
+        private Block block;
+        public override InventoryBase Inventory => inv;
+        private MeshData mesh;
+
+        private string type = "closed";
+
+        private string material;
+
+        private string material2;
+
+        private float[] mat;
+
+        private int[] UsableSlots;
+
+        private Cuboidf[] UsableSelectionBoxes;
+
+        public override string AttributeTransformCode => "onlangstrothsuperTransform";
+
+        public float MeshAngleRad { get; set; }
+
+        public string Type => type;
+
+        public string Material => material;
+        public string Material2 => material2;
 
         public BELangstrothSuper()
         {
-            inv = new InventoryGeneric(10, "frameslot-0", null, null);
+            inv = new InventoryGeneric(10, "superslot-0", null, null);
+        }
+
+        public string getMaterial()
+        {
+            return material;
+        }
+
+        public string getMaterial2()
+        {
+            return material2;
         }
 
         public override void Initialize(ICoreAPI api)
         {
             block = api.World.BlockAccessor.GetBlock(Pos, 0);
             base.Initialize(api);
+            if (mesh == null && type != null)
+            {
+                initLangstrothSuper();
+            }
         }
-                
+
+        private void initLangstrothSuper()
+        {
+            if (Api != null && type != null && base.Block is LangstrothSuper)
+            {
+                if (Api.Side == EnumAppSide.Client)
+                {
+                    mesh = (base.Block as LangstrothSuper).GetOrCreateMesh(type, material, material2);
+                    mat = Matrixf.Create().Translate(0.5f, 0.5f, 0.5f).RotateY(MeshAngleRad)
+                        .Translate(-0.5f, -0.5f, -0.5f)
+                        .Values;
+                }
+
+                if (block is LangstrothSuper)
+                {
+                    type = type;
+                }
+            }
+        }
+        public int[] getOrCreateUsableSlots()
+        {
+            if (UsableSlots == null)
+            {
+                genUsableSlots();
+            }
+
+            return UsableSlots;
+        }
+
+        private void genUsableSlots()
+        {
+            int[] slots = (base.Block as LangstrothSuper).slots;
+            List<int> list = new();
+            list.AddRange(slots);
+            UsableSlots = list.ToArray();
+            Cuboidf[] selectionboxes = type=="open"?(base.Block as LangstrothSuper).openselectionboxes: (base.Block as LangstrothSuper).closedselectionboxes;
+            UsableSelectionBoxes = new Cuboidf[selectionboxes.Length];
+            for (int i = 0; i < selectionboxes.Length; i++)
+            {
+                UsableSelectionBoxes[i] = selectionboxes[i].RotatedCopy(0f, MeshAngleRad * (180f / MathF.PI), 0f, new Vec3d(0.5, 0.5, 0.5));
+            }
+        }
         public override void OnBlockBroken(IPlayer player)
         {
             // Don't drop inventory contents
         }
+        public Cuboidf[] getOrCreateSelectionBoxes()
+        {
+            getOrCreateUsableSlots();
+            return UsableSelectionBoxes;
+        }
 
-        //TODO: Add animations to Langstroth Super
-        //BlockEntityAnimationUtil AnimUtil
-        //{
-        //    get { return GetBehavior<BEBehaviorAnimatable>()?.animUtil; }
-        //}
+        public override void OnBlockPlaced(ItemStack byItemStack = null)
+        {
+            base.OnBlockPlaced(byItemStack);
+            type = byItemStack?.Attributes.GetString("type");
+            material = byItemStack?.Attributes.GetString("material");
+            material2 = byItemStack?.Attributes.GetString("material2");
+            initLangstrothSuper();
+        }
 
         internal bool OnInteract(IPlayer byPlayer, BlockSelection blockSel)
         {
             ItemSlot activeHotbarSlot = byPlayer.InventoryManager.ActiveHotbarSlot;
             ItemStack itemstack = activeHotbarSlot.Itemstack;
             bool flag = (itemstack != null ? itemstack.Collectible.FirstCodePart() == "beeframe" : false);
-                //((itemstack != null) ? itemstack.Collectible : null) is LangstrothFrame;
             BlockContainer blockContainer = this.Api.World.BlockAccessor.GetBlock(blockSel.Position, 0) as BlockContainer;
             blockContainer.SetContents(new ItemStack(blockContainer, 1), base.GetContentStacks(true));
-            if (!activeHotbarSlot.Empty && activeHotbarSlot.Itemstack.Collectible.FirstCodePart(0) == "langstrothbroodtop" && activeHotbarSlot.Itemstack.Collectible.Variant["primary"] == base.Block.Variant["primary"] && activeHotbarSlot.Itemstack.Collectible.Variant["accent"] == base.Block.Variant["accent"])
+            if (!activeHotbarSlot.Empty && activeHotbarSlot.Itemstack.Collectible.FirstCodePart(0) == "langstrothbroodtop" && activeHotbarSlot.Itemstack.Collectible.Variant["primary"] == material && activeHotbarSlot.Itemstack.Collectible.Variant["accent"] == material2)
             {
                 if (this.inv.Empty)
                 {
@@ -78,7 +163,7 @@ namespace FromGoldenCombs.BlockEntities
                     coreClientAPI.TriggerIngameError(this, "nonemptysuper", Lang.Get("fromgoldencombs:nonemptysuper", Array.Empty<object>()));
                 }
             }
-            else if ((activeHotbarSlot.Empty || !flag) && blockSel.SelectionBoxIndex < 10 && base.Block.Variant["open"] == "open")
+            else if ((activeHotbarSlot.Empty || !flag) && blockSel.SelectionBoxIndex < 10 && type == "open")
             {
                 if (this.TryTake(byPlayer, blockSel))
                 {
@@ -86,7 +171,7 @@ namespace FromGoldenCombs.BlockEntities
                     return true;
                 }
             }
-            else if (flag && blockSel.SelectionBoxIndex < 10 && base.Block.Variant["open"] == "open")
+            else if (flag && blockSel.SelectionBoxIndex < 10 && type == "open")
             {
                 base.MarkDirty(true, null);
                 if (this.TryPut(activeHotbarSlot, blockSel))
@@ -96,22 +181,23 @@ namespace FromGoldenCombs.BlockEntities
             }
             else
             {
-                if (activeHotbarSlot.Itemstack == null && activeHotbarSlot.StorageType == EnumItemStorageFlags.Backpack && this.Api.World.BlockAccessor.GetBlock(blockSel.Position).Variant["open"] == "closed" && byPlayer.InventoryManager.TryGiveItemstack(blockContainer.OnPickBlock(this.Api.World, blockSel.Position), false))
+                if (activeHotbarSlot.Itemstack == null && activeHotbarSlot.StorageType == EnumItemStorageFlags.Backpack && type == "closed" && byPlayer.InventoryManager.TryGiveItemstack(blockContainer.OnPickBlock(this.Api.World, blockSel.Position), false))
                 {
                     this.Api.World.BlockAccessor.SetBlock(0, blockSel.Position);
                     base.MarkDirty(true, null);
                     return true;
                 }
-                if (base.Block.Variant["open"] == "open" && !byPlayer.Entity.Controls.Sneak)
+                if (type == "open" && !byPlayer.Entity.Controls.Sneak)
                 {
-                    this.Api.World.BlockAccessor.ExchangeBlock(this.Api.World.GetBlock(blockContainer.CodeWithVariant("open", "closed")).BlockId, blockSel.Position);
+                    type = "closed";
                     base.MarkDirty(true, null);
+                    updateMeshes();
                     return true;
                 }
-                if (base.Block.Variant["open"] == "closed")
+                if (type == "closed")
                 {
-                    this.Api.World.BlockAccessor.ExchangeBlock(this.Api.World.GetBlock(blockContainer.CodeWithVariant("open", "open")).BlockId, blockSel.Position);
-                    //updateMeshes();
+                    type = "open";
+                    updateMeshes();
                     base.MarkDirty(true, null);
                     return true;
                 }
@@ -162,119 +248,63 @@ namespace FromGoldenCombs.BlockEntities
             return false;
         }
 
-        public Vec3f getTranslation(Block block,int index)
-        {
-            float x = 0f;
-            //float y = 0.069f;
-            //float z = 0f;
-            Vec3f translation = new(0f, 0f, 0f);
-            if (block.Variant["side"] == "north")
-            {
-                translation.X = .7253f + .0625f * index - 1;    
-            }
-            else if (block.Variant["side"] == "south")
-            {
-                translation.X = x = 0.2747f - .0625f * index;
-            }
-            else if (block.Variant["side"] == "west")
-            {
-                translation.Z = 0.2747f - .0625f * index;
-            }
-            else if (block.Variant["side"] == "east")
-            {
-                translation.Z = 0.7253f + .0625f * index - 1;
-            }
-            return translation;
-        }
-
-        protected override MeshData getOrCreateMesh(ItemStack stack, int index)
-        {
-            MeshData mesh = this.getMesh(stack);
-            if (mesh != null)
-            {
-                return mesh;
-            }
-            IContainedMeshSource meshSource = stack.Collectible as IContainedMeshSource;
-            if (meshSource != null)
-            {
-                mesh = meshSource.GenMesh(stack, this.capi.BlockTextureAtlas, this.Pos);
-                mesh.Rotate(new Vec3f(0.5f, 0.5f, 0.5f), 0f, base.Block.Shape.rotateY * 0.017453292f, 0f);
-            }
-            else
-            {
-                ICoreClientAPI capi = this.Api as ICoreClientAPI;
-                if (stack.Class == EnumItemClass.Block)
-                {
-                    mesh = capi.TesselatorManager.GetDefaultBlockMesh(stack.Block).Clone();
-                }
-                else
-                {
-                    this.nowTesselatingObj = stack.Collectible;
-                    this.nowTesselatingShape = null;
-                    CompositeShape shape = stack.Item.Shape;
-                    if (((shape != null) ? shape.Base : null) != null)
-                    {
-                        this.nowTesselatingShape = capi.TesselatorManager.GetCachedShape(stack.Item.Shape.Base);
-                    }
-                    capi.Tesselator.TesselateItem(stack.Item, out mesh, this);
-                    mesh.RenderPassesAndExtraBits.Fill((short)2);
-                }
-            }
-            JsonObject attributes = stack.Collectible.Attributes;
-            if (attributes != null && attributes[this.AttributeTransformCode].Exists)
-            {
-                JsonObject attributes2 = stack.Collectible.Attributes;
-                ModelTransform transform = (attributes2 != null) ? attributes2[this.AttributeTransformCode].AsObject<ModelTransform>(null) : null;
-                transform.EnsureDefaultValues();
-                mesh.ModelTransform(transform);
-            }
-            if (stack.Class == EnumItemClass.Item && (stack.Item.Shape == null || stack.Item.Shape.VoxelizeTexture))
-            {
-                mesh.Rotate(new Vec3f(0.5f, 0.5f, 0.5f), 1.5707964f, 0f, 0f);
-                mesh.Scale(new Vec3f(0.5f, 0.5f, 0.5f), 0.33f, 0.33f, 0.33f);
-                mesh.Translate(getTranslation(block,index));
-            }
-            string key = this.getMeshCacheKey(stack);
-            this.MeshCache[key] = mesh;
-            return mesh;
-        }
-
-
         protected override float[][] genTransformationMatrices()
         {
-            //float x = 0f;
-            //float y = 0.069f;
-            //float z = 0f;
-            float[][] tfMatrices = new float[10][];
-            for (int index = 0; index < 10; index++)
+            tfMatrices = new float[Inventory.Count][];
+            Cuboidf[] selectionBoxes = type == "open"?(base.Block as LangstrothSuper).openselectionboxes : (base.Block as LangstrothSuper).closedselectionboxes;
+            for (int i = 0; i < selectionBoxes.Length-1; i++)
             {
-                
-                Vec3f translation = new(0f, 0.069f, 0f);
-                
-                if (block.Variant["side"] == "north")
-                {
-                    translation.X = .7253f + .0625f * index - 1;
-                    tfMatrices[index] = new Matrixf().Translate(translation.X, translation.Y, translation.Z).Values;
-                }
-                else if (block.Variant["side"] == "south")
-                {
-                    translation.X = 0.2747f - .0625f * index;
-                    tfMatrices[index] = new Matrixf().Translate(translation.X, translation.Y, translation.Z).Values;
-                }
-                else if (block.Variant["side"] == "west")
-                {
-                    translation.Z = 0.2747f - .0625f * index +1;
-                    tfMatrices[index] = new Matrixf().Translate(translation.X, translation.Y, translation.Z).RotateYDeg(90).Values;
-                }
-                else if (block.Variant["side"] == "east")
-                {
-
-                    translation.Z = 0.7253f + .0625f * index;
-                    tfMatrices[index] = new Matrixf().Translate(translation.X, translation.Y, translation.Z).RotateYDeg(90).Values;
-                }
-                
+                Cuboidf obj = selectionBoxes[i];
+                float midX = obj.MidX;
+                float midY = 0.069f;
+                float midZ = obj.MidZ;
+                Vec3f vec3f = new Vec3f(midX, midY, midZ);
+                vec3f = new Matrixf().RotateY(MeshAngleRad).TransformVector(vec3f.ToVec4f(0f)).XYZ;
+                tfMatrices[i] = new Matrixf().Translate(vec3f.X, vec3f.Y, vec3f.Z).Translate(0.5f, 0f, 0.5f).RotateY(MeshAngleRad - MathF.PI).Values;
             }
+
             return tfMatrices;
+        }
+        public override bool OnTesselation(ITerrainMeshPool mesher, ITesselatorAPI tessThreadTesselator)
+        {
+            mesher.AddMeshData(mesh, mat);
+            base.OnTesselation(mesher, tessThreadTesselator);
+            return true;
+        }
+
+        public override void ToTreeAttributes(ITreeAttribute tree)
+        {
+            base.ToTreeAttributes(tree);
+            tree.SetString("type", type);
+            tree.SetString("material", material);
+            tree.SetString("material2", material2);
+            tree.SetFloat("meshAngleRad", MeshAngleRad);
+            tree.SetBool("usableSlotsDirty", UsableSlots == null);
+        }
+
+        public override void FromTreeAttributes(ITreeAttribute tree, IWorldAccessor worldForResolving)
+        {
+            base.FromTreeAttributes(tree, worldForResolving);
+            type = tree.GetString("type");
+            material = tree.GetString("material");
+            material2 = tree.GetString("material2");
+            MeshAngleRad = tree.GetFloat("meshAngleRad");
+            if (tree.GetBool("usableSlotsDirty"))
+            {
+                UsableSlots = null;
+            }
+
+            initLangstrothSuper();
+            RedrawAfterReceivingTreeAttributes(worldForResolving);
+        }
+
+        
+
+        public void OnTransformed(IWorldAccessor worldAccessor, ITreeAttribute tree, int degreeRotation, Dictionary<int, AssetLocation> oldBlockIdMapping, Dictionary<int, AssetLocation> oldItemIdMapping, EnumAxis? flipAxis)
+        {
+            MeshAngleRad = tree.GetFloat("meshAngleRad");
+            MeshAngleRad -= (float)degreeRotation * (MathF.PI / 180f);
+            tree.SetFloat("meshAngleRad", MeshAngleRad);
         }
 
         public override void GetBlockInfo(IPlayer forPlayer, StringBuilder sb)
@@ -284,9 +314,8 @@ namespace FromGoldenCombs.BlockEntities
             {
                 base.GetBlockInfo(forPlayer, sb);
             }
-            else if (this.Block.Variant["open"] == "closed")
+            else if (type == "closed")
             {
-
                 return;
             }
             else if (index == 10)

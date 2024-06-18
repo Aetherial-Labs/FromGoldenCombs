@@ -11,11 +11,16 @@ using Vintagestory.API.Util;
 using Vintagestory.ServerMods;
 using Vintagestory.GameContent;
 using System;
+using System.Text;
+using Vintagestory.API.Config;
+
+
 
 namespace FromGoldenCombs.Blocks
 {
     class FrameRack : LangstrothCore
     {
+        
         private string[] types;
 
         private string[] materials;
@@ -32,8 +37,6 @@ namespace FromGoldenCombs.Blocks
 
         public int[] slots = new int[10];
 
-
-        // Todo: Add interaction help
         public override void OnLoaded(ICoreAPI api)
         {
             base.OnLoaded(api);
@@ -210,7 +213,7 @@ namespace FromGoldenCombs.Blocks
 
         public override bool DoParticalSelection(IWorldAccessor world, BlockPos pos)
         {
-            return false;
+            return true;
         }
 
         public override ItemStack OnPickBlock(IWorldAccessor world, BlockPos pos)
@@ -239,6 +242,16 @@ namespace FromGoldenCombs.Blocks
                 return beFrameRack.OnInteract(byPlayer, blockSel);
             }
             return false;
+        }
+
+
+
+        public override string GetPlacedBlockName(IWorldAccessor world, BlockPos pos)
+        {
+            StringBuilder sb = new();
+            Block block = world.BlockAccessor.GetBlock(pos);
+            BEFrameRack be = world.BlockAccessor.GetBlockEntity<BEFrameRack>(pos);
+            return Lang.Get(be.getMaterial().UcFirst()) + " & " + Lang.Get(be.getMaterial2().UcFirst() + sb.AppendLine() +  OnPickBlock(world, pos)?.GetName());
         }
     }
 }

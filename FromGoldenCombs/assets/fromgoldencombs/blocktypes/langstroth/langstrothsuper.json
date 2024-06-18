@@ -6,48 +6,44 @@
   "maxstacksize": 1,
   "heldTpIdleAnimation": "holdbothhandslarge",
   "heldTpUseAnimation": "twohandplaceblock",
-  "creativeinventory": { "general": ["langstrothsuper-closed-*-east"] },
+  "creativeinventory": { "general": ["langstrothsuper"] },
   "attributes": {
         "handbook": {
-        "groupBy": ["langstrothsuper-closed-*-east"],
+        "groupBy": ["langstrothsuper"],
         "extraSections": [{
               "title": "fromgoldencombs:block-handbooktitle-langstrothsuper",
               "text": "fromgoldencombs:block-handbooktext-langstrothsuper"
             }]
-        }
+        },
+        types: ["open","closed"],
+		    materials: { loadFromProperties: "block/wood", states: ["aged"] },
+        materials2: { loadFromProperties: "block/wood", states: ["aged"] },
+		    shape: { base: "fromgoldencombs:block/hive/langstroth/langstrothsuper-closed" },
+		    textures: { 
+			    "primary": { base: "block/wood/debarked/{material}"},
+			    "accent": { base: "block/wood/debarked/{material2}"}
+        },
+        "closedselectionboxes": [{ "x1": 0.062, "y1": 0.0126, "z1": 0.156, "x2": 0.9254, "y2": 0.3624, "z2": 0.845}],
+        "openselectionboxes": [{ "x1": 0.1878, "y1": 0, "z1": 0.25, "x2": 0.2503, "y2": 0.3125, "z2": 0.75},
+              { "x1": 0.2503, "y1": 0, "z1": 0.25, "x2": 0.3128, "y2": 0.3125, "z2": 0.75},
+              { "x1": 0.3128, "y1": 0, "z1": 0.25, "x2": 0.3753, "y2": 0.3125, "z2": 0.75},
+              { "x1": 0.3753, "y1": 0, "z1": 0.25, "x2": 0.4378, "y2": 0.3125, "z2": 0.75},
+              { "x1": 0.4378, "y1": 0, "z1": 0.25, "x2": 0.5003, "y2": 0.3125, "z2": 0.75},
+              { "x1": 0.5003, "y1": 0, "z1": 0.25, "x2": 0.5628, "y2": 0.3125, "z2": 0.75},
+              { "x1": 0.5628, "y1": 0, "z1": 0.25, "x2": 0.6253, "y2": 0.3125, "z2": 0.75},
+              { "x1": 0.6253, "y1": 0, "z1": 0.25, "x2": 0.6878, "y2": 0.3125, "z2": 0.75},
+              { "x1": 0.6878, "y1": 0, "z1": 0.25, "x2": 0.7503, "y2": 0.3125, "z2": 0.75},
+              { "x1": 0.7503, "y1": 0, "z1": 0.25, "x2": 0.8128, "y2": 0.3125, "z2": 0.75},
+              { "x1": 0.094, "y1": 0, "z1": 0.1575, "x2": 0.9055, "y2": 0.2818, "z2": 0.8425}
+          ],
+        "collisionboxes": [{ "x1": 0.062, "y1": 0.0126, "z1": 0.156, "x2": 0.9254, "y2": 0.3624, "z2": 0.845}],
+        
   },
+  shape: { base: "fromgoldencombs:block/hive/langstroth/langstrothsuper-closed" },
   "behaviors": [
     { "name": "HorizontalOrientable", "properties": { "dropBlockFace": "east" }},
     { "name": "Unstable" }
   ],
-  "variantgroups": [
-    { "code": "open", "states": [ "open", "closed" ] },
-    { "code": "primary", "states": ["aged"], "loadFromProperties": "block/wood" },
-    { "code": "accent", "states": ["aged"], "loadFromProperties": "block/wood" },
-    { "code": "side", "loadFromProperties": "abstract/horizontalorientation" }
-  ],
-  "textures": {		
-      "primary": { "base": "game:block/wood/debarked/{primary}" },
-			"accent": { "base": "game:block/wood/debarked/{accent}" }
-	},
-  "shapeByType": {
-  "*-north": {
-     "base": "block/hive/langstroth/langstrothsuper-{open}",
-     "rotateY": 0
-     },
-     "*-east": {
-     "base": "block/hive/langstroth/langstrothsuper-{open}",
-     "rotateY": 270
-     },
-     "*-south": {
-        "base": "block/hive/langstroth/langstrothsuper-{open}",
-        "rotateY": 180
-     },
-     "*-west": {
-     "base": "block/hive/langstroth/langstrothsuper-{open}",
-     "rotateY": 90
-     }
-  },
   "lightAbsorption": 0,
   "sideopaque": { "all": false },
   "sidesolid": { "all": false },
@@ -93,32 +89,5 @@
         "z": 0.85
       },
       "scale": 0.56
-    },
-  "collisionboxesByType": {
-      "*-closed": [
-        { "x1": 0.062, "y1": 0.0126, "z1": 0.156, "x2": 0.9254, "y2": 0.3624, "z2": 0.845, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west*": 90}}
-      ],
-      "*-open": [
-        { "x1": 0.062, "y1": 0.0126, "z1": 0.156, "x2": 0.9254, "y2": 0.3624, "z2": 0.845, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west*": 90}}
-       
-      ]
-    },
-  "selectionboxesByType": {
-      "*-closed-*": [
-        { "x1": 0.062, "y1": 0.0126, "z1": 0.156, "x2": 0.9254, "y2": 0.3624, "z2": 0.845, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west*": 90}}
-      ],
-      "*-open-*": [
-        { "x1": 0.1878, "y1": 0, "z1": 0.25, "x2": 0.2503, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.2503, "y1": 0, "z1": 0.25, "x2": 0.3128, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.3128, "y1": 0, "z1": 0.25, "x2": 0.3753, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.3753, "y1": 0, "z1": 0.25, "x2": 0.4378, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.4378, "y1": 0, "z1": 0.25, "x2": 0.5003, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.5003, "y1": 0, "z1": 0.25, "x2": 0.5628, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.5628, "y1": 0, "z1": 0.25, "x2": 0.6253, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.6253, "y1": 0, "z1": 0.25, "x2": 0.6878, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.6878, "y1": 0, "z1": 0.25, "x2": 0.7503, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.7503, "y1": 0, "z1": 0.25, "x2": 0.8128, "y2": 0.3125, "z2": 0.75, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}},
-        { "x1": 0.094, "y1": 0, "z1": 0.1575, "x2": 0.9055, "y2": 0.2818, "z2": 0.8425, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west": 90}}
-      ]
     }
 }

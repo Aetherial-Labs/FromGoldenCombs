@@ -3,7 +3,7 @@
     "Profile 1": {
       "commandName": "Executable",
       "executablePath": "C:\\Users\\vinte\\AppData\\Roaming\\Vintagestory\\1.19\\Vintagestory.exe",
-      "commandLineArgs": "--addModPath=\"C:\\Users\\vinte\\source\\repos\\FromGoldenCombs\\FromGoldenCombs\\bin\\Debug\"  --addOrigin=\"C:\\Users\\vinte\\source\\repos\\FromGoldenCombs\\FromGoldenCombs\\assets\"",
+      "commandLineArgs": "--addModPath=\"C:\\Users\\vinte\\source\\repos\\ALCMyCore\\ALCMYCore\\bin\\Debug\" \r\n--addOrigin=\"C:\\Users\\vinte\\source\\repos\\ALCMyCore\\ALCMYCore\\bin\\assets\" ",
       "workingDirectory": "C:\\Users\\vinte\\AppData\\Roaming\\Vintagestory\\1.19"
     }
   }

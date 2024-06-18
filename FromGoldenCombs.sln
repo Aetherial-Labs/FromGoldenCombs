@@ -3,11 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FromGoldenCombs", "FromGoldenCombs\FromGoldenCombs.csproj", "{A304941D-12BA-45E5-B963-AB7962561FC8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7FB226C6-9033-4C9F-BC66-4C95C826A3A3} = {7FB226C6-9033-4C9F-BC66-4C95C826A3A3}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Launcher", "Launcher\Launcher.csproj", "{E30C2B30-2378-4889-9E25-6BE640DB0204}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A304941D-12BA-45E5-B963-AB7962561FC8} = {A304941D-12BA-45E5-B963-AB7962561FC8}
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ALCMyCore", "..\ALCMyCore\ALCMyCore\ALCMyCore.csproj", "{7FB226C6-9033-4C9F-BC66-4C95C826A3A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +38,14 @@ Global
 		{E30C2B30-2378-4889-9E25-6BE640DB0204}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E30C2B30-2378-4889-9E25-6BE640DB0204}.Release|x64.ActiveCfg = Release|Any CPU
 		{E30C2B30-2378-4889-9E25-6BE640DB0204}.Release|x64.Build.0 = Release|Any CPU
+		{7FB226C6-9033-4C9F-BC66-4C95C826A3A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FB226C6-9033-4C9F-BC66-4C95C826A3A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FB226C6-9033-4C9F-BC66-4C95C826A3A3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7FB226C6-9033-4C9F-BC66-4C95C826A3A3}.Debug|x64.Build.0 = Debug|Any CPU
+		{7FB226C6-9033-4C9F-BC66-4C95C826A3A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FB226C6-9033-4C9F-BC66-4C95C826A3A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FB226C6-9033-4C9F-BC66-4C95C826A3A3}.Release|x64.ActiveCfg = Release|Any CPU
+		{7FB226C6-9033-4C9F-BC66-4C95C826A3A3}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

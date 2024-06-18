@@ -1,60 +1,48 @@
 {
   "code": "langstrothbase",
   "class": "langstrothbase",
+  "entityClass": "belangstrothbase",
   "storageFlags": 2,
   "maxstacksize": 1,
   "attributes": {
     handbook: {
-			groupBy: ["langstrothbase-*-east"],
+			groupBy: ["langstrothbase-*"],
       "extraSections": [
         {
           "title": "fromgoldencombs:block-handbooktitle-langstrothbase",
           "text": "fromgoldencombs:block-handbooktext-langstrothbase"
         }
       ]
-    }
-  },
-  "creativeinventory": { "general": ["langstrothbase-*-east"] },
-  "variantgroups": [
-    { "code": "primary", "states": ["aged"], "loadFromProperties": "block/wood" },
-    { "code": "accent", "states": ["aged"], "loadFromProperties": "block/wood" },
-    { "code": "side", "loadFromProperties": "abstract/horizontalorientation"}
-  ],
+    },
+  types: ["normal"],
+	materials: { loadFromProperties: "block/wood", states: ["aged"] },
+  materials2: { loadFromProperties: "block/wood", states: ["aged"] },
+  "shape": {"base": "fromgoldencombs:block/hive/langstroth/langstrothbase"},
+  textures: { 
+			    "primary": { base: "block/wood/debarked/{material}"},
+			    "accent": { base: "block/wood/debarked/{material2}"}
+            },
+  "collisionboxes": [{ "x1": 0.062, "y1": 0.0126, "z1": 0.156, "x2": 0.9254, "y2": 0.3624, "z2": 0.845, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west*": 90}}],
+  "selectionboxes": [{"x1": 0.062, "y1": 0.0126, "z1": 0.156, "x2": 0.9254, "y2": 0.3624, "z2": 0.845, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west*": 90}}]
+    },
   "behaviors": [{
         "name": "HorizontalOrientable",
         "properties": { "dropBlockFace": "east" }
     },
-    { "name": "Unstable" }
+    { "name": "Unstable" },
+    { "name": "attributeRenderHandler" }
   ],
-  
   "heldTpIdleAnimation": "holdbothhandslarge",
   "heldTpUseAnimation": "twohandplaceblock",
-  "textures": {		
-      "primary": { "base": "game:block/wood/debarked/{primary}" },
-			"accent": { "base": "game:block/wood/debarked/{accent}" }
-	},
-  "shapeByType": {
-  "*-north": {
-     "base": "block/hive/langstroth/langstrothbase",
-     "rotateY": 0
-     },
-     "*-east": {
-     "base": "block/hive/langstroth/langstrothbase",
-     "rotateY": 270
-     },
-     "*-south": {
-        "base": "block/hive/langstroth/langstrothbase",
-        "rotateY": 180
-     },
-     "*-west": {
-     "base": "block/hive/langstroth/langstrothbase",
-     "rotateY": 90
-     }
-  },
-  "lightAbsorption": 0,
+  "shape": { "base": "fromgoldencombs:block/hive/langstroth/langstrothbase"},
   "sideopaque": { "all": false },
   "sidesolid": { "all": false },
-  "blockmaterial": "Ceramic",
+  "emitSideAO": { "all": false},
+  "blockmaterial": "Wood",
+  "combustibleProps": {
+		burnTemperature: 600,
+		burnDuration: 35,
+	},
   "sounds": {
       "place": "game:block/planks"
     },
@@ -66,19 +54,7 @@
 		"rotation": { "x": 26,"y": -46,"z": -2 },
 		"origin": { "x": 1.7,"y": 0.1,"z": 0.3 },
 		"scale": 3.04
-	},
-
-  "collisionboxesByType": {
-      "*": [
-        { "x1": 0.062, "y1": 0.0126, "z1": 0.156, "x2": 0.9254, "y2": 0.3624, "z2": 0.845, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west*": 90}}
-      ]
-    },
-  "selectionboxesByType": {
-      "*": [
-        { "x1": 0.062, "y1": 0.0126, "z1": 0.156, "x2": 0.9254, "y2": 0.3624, "z2": 0.845, "rotateYByType": { "*-north": 0, "*-east": 270, "*-south": 180, "*-west*": 90}}
-        ]
-    }
-
+	}
 }
 
 	

@@ -15,7 +15,7 @@ using Vintagestory;
 
 namespace FromGoldenCombs.BlockEntities
 {
-
+    
     class BEFrameRack : BlockEntityDisplay
     {
         readonly InventoryGeneric inv;
@@ -103,7 +103,6 @@ namespace FromGoldenCombs.BlockEntities
 
         private void genUsableSlots()
         {
-            bool num = isRack(BEBehaviorDoor.getAdjacentOffset(-1, 0, 0, MeshAngleRad, invertHandles: false));
             int[] slots = (base.Block as FrameRack).slots;
             List<int> list = new();
             list.AddRange(slots);
@@ -116,16 +115,6 @@ namespace FromGoldenCombs.BlockEntities
             }
         }
 
-        private bool isRack(Vec3i offset)
-        {
-            BEFrameRack blockEntity = Api.World.BlockAccessor.GetBlockEntity<BEFrameRack>(Pos.AddCopy(offset));
-            if (blockEntity != null)
-            {
-                return blockEntity.MeshAngleRad == MeshAngleRad;
-            }
-
-            return false;
-        }
         public override void OnBlockPlaced(ItemStack byItemStack = null)
         {
             base.OnBlockPlaced(byItemStack);
@@ -346,6 +335,12 @@ namespace FromGoldenCombs.BlockEntities
             RedrawAfterReceivingTreeAttributes(worldForResolving);
         }
 
+        public void OnTransformed(IWorldAccessor worldAccessor, ITreeAttribute tree, int degreeRotation, Dictionary<int, AssetLocation> oldBlockIdMapping, Dictionary<int, AssetLocation> oldItemIdMapping, EnumAxis? flipAxis)
+        {
+            MeshAngleRad = tree.GetFloat("meshAngleRad");
+            MeshAngleRad -= (float)degreeRotation * (MathF.PI / 180f);
+            tree.SetFloat("meshAngleRad", MeshAngleRad);
+        }
 
         public override void GetBlockInfo(IPlayer forPlayer, StringBuilder sb)
         {
@@ -370,12 +365,7 @@ namespace FromGoldenCombs.BlockEntities
             }
         }
 
-        public void OnTransformed(IWorldAccessor worldAccessor, ITreeAttribute tree, int degreeRotation, Dictionary<int, AssetLocation> oldBlockIdMapping, Dictionary<int, AssetLocation> oldItemIdMapping, EnumAxis? flipAxis)
-        {
-            MeshAngleRad = tree.GetFloat("meshAngleRad");
-            MeshAngleRad -= (float)degreeRotation * (MathF.PI / 180f);
-            tree.SetFloat("meshAngleRad", MeshAngleRad);
-        }
+       
     }
 }
 

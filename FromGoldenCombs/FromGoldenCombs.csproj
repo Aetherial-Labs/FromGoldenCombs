@@ -118,6 +118,9 @@
     <Content Update="assets\fromgoldencombs\recipes\grid\framerack.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="assets\fromgoldencombs\recipes\grid\langstrothbase.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">

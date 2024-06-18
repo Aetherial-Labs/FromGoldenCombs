@@ -60,8 +60,8 @@
   "block-rawclaypothive": "Raw Claypot Brood Pot",
   "blockhelp-rawclaypothive": "Place in pitkiln to fire.",
 
-  "block-langstrothbase-*": "Langstroth Base",
-  "block-langstrothsuper-*": "Langstroth Super",
+  "block-langstrothbase": "Langstroth Base",
+  "block-langstrothsuper": "Langstroth Super",
   "block-langstrothstack-*": "Langstroth Stack",
   "langstrothstack-*-*-hive": "Langstroth Hive",
   "block-langstrothbrood-*": "Langstroth Brood Box",
