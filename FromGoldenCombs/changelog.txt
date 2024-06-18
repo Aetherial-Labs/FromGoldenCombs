@@ -1,5 +1,8 @@
 1-19-V1.4.31
 	- Fixed Harvestable Frames Not Rendering After Being Filled In Hive
+	- Converted all Langstroth Blocks (except the Langstroth Stack) to Attribute Based Rendering.
+	- Added feature to add or remove all beeframes from a super with Shift+Right-Click
+
 
 1-19-V1.4.30
 	- Fixed Frames not rendering in Super when opened

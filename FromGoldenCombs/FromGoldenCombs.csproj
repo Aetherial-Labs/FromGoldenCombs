@@ -91,6 +91,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Update="assets\fromgoldencombs\blocktypes\langstroth\langstrothstack.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="assets\fromgoldencombs\config\handbook\08-fromgoldencombsguide.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

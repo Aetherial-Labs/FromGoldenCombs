@@ -41,6 +41,7 @@
   "blockhelp-honeypot-harvestable": "Use a knife to harvest your comb",
   "blockhelp-langstrothsuper": "Open/Close Hive",
   "blockhelp-langstrothsuper-open": "Select Slot To Add/Remove Frame",
+  "blockhelp-langstrothsuper-open-takeall": "Take/remove all beeframes",
   "blockhelp-langstrothsuper-closed": "Pick Up in Bag Slot",
   "blockhelp-langstrothsuper-broodtop": "Place matching brood box top to create brood box.",
   "blockhelp-langstrothsuper-createstack": "Place a langstroth piece to create stack",

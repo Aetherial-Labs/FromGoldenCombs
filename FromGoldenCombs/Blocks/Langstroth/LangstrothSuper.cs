@@ -39,12 +39,15 @@ namespace FromGoldenCombs.Blocks
 
             public int[] slots = new int[10];
 
+            public string type;
+
             public override void OnLoaded(ICoreAPI api)
             {
                 base.OnLoaded(api);
                 LoadTypes();
             }
 
+            
             public override bool OnBlockInteractStart(IWorldAccessor world, IPlayer byPlayer, BlockSelection blockSel)
             {
                 if (!(byPlayer.InventoryManager.ActiveHotbarSlot.Itemstack?.Block is LangstrothCore))
@@ -112,9 +115,15 @@ namespace FromGoldenCombs.Blocks
         public override Cuboidf[] GetSelectionBoxes(IBlockAccessor blockAccessor, BlockPos pos)
         {
             return GetBlockEntity<BELangstrothSuper>(pos)?.getOrCreateSelectionBoxes() ?? base.GetSelectionBoxes(blockAccessor, pos);
-        }            
+        }
 
-            public override Cuboidf[] GetCollisionBoxes(IBlockAccessor blockAccessor, BlockPos pos)
+        public Cuboidf[] getSelBoxes(String type)
+        {
+
+            return type == "open" ? openselectionboxes : closedselectionboxes;
+        }
+        
+        public override Cuboidf[] GetCollisionBoxes(IBlockAccessor blockAccessor, BlockPos pos)
             {
                 return CollisionBox;
             }
@@ -243,8 +252,9 @@ namespace FromGoldenCombs.Blocks
                 WorldInteraction[] wi;
                 WorldInteraction[] wi2 = null;
                 WorldInteraction[] wi3 = null;
+                WorldInteraction[] wi4 = null;
                 WorldInteraction[] wx = null;
-
+                String thisType = this.type;
                 wi = ObjectCacheUtil.GetOrCreate(api, "superInteractions1", () =>
                 {
 
@@ -252,12 +262,11 @@ namespace FromGoldenCombs.Blocks
                     new WorldInteraction() {
                             ActionLangCode = "fromgoldencombs:blockhelp-langstrothsuper",
                             MouseButton = EnumMouseButton.Right
-
                         }
                     };
                 });
 
-                if (Variant["open"] == "open")
+                if (thisType == "open")
                 {
                     wi2 = ObjectCacheUtil.GetOrCreate(api, "superInteractions2", () =>
                     {
@@ -267,12 +276,25 @@ namespace FromGoldenCombs.Blocks
                                     ActionLangCode = "fromgoldencombs:blockhelp-langstrothsuper-open",
                                     MouseButton = EnumMouseButton.Right
                             }
-                    };
+                        };
 
                     });
-                }
 
-                if (Variant["open"] == "closed")
+                    wi4 = ObjectCacheUtil.GetOrCreate(api, "superInteractions3", () =>
+                    {
+
+                        return new WorldInteraction[] {
+                                new WorldInteraction() {
+                                        ActionLangCode = "fromgoldencombs:blockhelp-langstrothsuper-open-takeall",
+                                        HotKeyCode = "sneak",
+                                        MouseButton = EnumMouseButton.Right
+                                }
+                            };
+
+                    });
+            }
+
+                if (thisType == "closed")
                 {
                     wi2 = ObjectCacheUtil.GetOrCreate(api, "superInteractions3", () =>
                     {
@@ -310,15 +332,15 @@ namespace FromGoldenCombs.Blocks
                     };
                     });
                 }
-                if (wi2 == null || wi3 == null)
-                {
-                    return wi;
-                }
-                else if (wi3 == null)
-                {
-                    return wi.Append(wi2);
-                }
-                return wi.Append(wi2).Append(wi3).Append(wx);
+            //if (wi2 == null || wi3 == null)
+            //{
+            //    return wi;
+            //}
+            //else if (wi3 == null)
+            //{
+            //    return wi.Append(wi2);
+            //}
+            return thisType == "open" ? wi.Append(wi2).Append(wi4).Append(wx):wi.Append(wi2).Append(wi3).Append(wx) ;
             }
         }
     }

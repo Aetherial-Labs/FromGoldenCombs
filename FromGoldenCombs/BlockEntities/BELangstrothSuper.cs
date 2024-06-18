@@ -10,6 +10,8 @@ using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.GameContent;
+using System.Runtime.CompilerServices;
+using Vintagestory.Client.NoObf;
 
 namespace FromGoldenCombs.BlockEntities
 {
@@ -174,7 +176,7 @@ namespace FromGoldenCombs.BlockEntities
             else if (flag && blockSel.SelectionBoxIndex < 10 && type == "open")
             {
                 base.MarkDirty(true, null);
-                if (this.TryPut(activeHotbarSlot, blockSel))
+                if (this.TryPut(byPlayer, activeHotbarSlot, blockSel))
                 {
                     return true;
                 }
@@ -205,9 +207,10 @@ namespace FromGoldenCombs.BlockEntities
             return false;
         }
 
-        private bool TryPut(ItemSlot slot, BlockSelection blockSel)
+        private bool TryPut(IPlayer byPlayer, ItemSlot slot, BlockSelection blockSel)
         {
             int index = blockSel.SelectionBoxIndex;
+            if (byPlayer.Entity.Controls.Sneak) return TryPutAll(slot, blockSel);
 
             for (int i = 0; i < inv.Count; i++)
             {
@@ -223,10 +226,32 @@ namespace FromGoldenCombs.BlockEntities
             return false;
         }
 
+        private bool TryPutAll(ItemSlot slot, BlockSelection blockSel)
+        {
+            int index = blockSel.SelectionBoxIndex;
+            int moved = 0;
+            for (int i = 0; i < ((LangstrothSuper)block).getSelBoxes(type).Length - 1; i++)
+            {
+                    int slotnum = (index + i) % inv.Count;
+                    if (inv[slotnum].Empty)
+                    {
+                        moved = slot.TryPutInto(Api.World, inv[slotnum]);
+                    }
+                if (inv[slotnum].Empty) break;
+            }
+            updateMeshes();
+            return moved > 0;
+        }
+
+
         private bool TryTake(IPlayer byPlayer, BlockSelection blockSel)
         {
             int index = blockSel.SelectionBoxIndex;
-            
+
+
+            if (byPlayer.Entity.Controls.Sneak) return TryTakeAll(byPlayer, blockSel);
+
+
             if (!inv[index].Empty)
             {
                 ItemStack stack = inv[index].TakeOut(1);
@@ -236,7 +261,7 @@ namespace FromGoldenCombs.BlockEntities
                     Api.World.PlaySoundAt(sound ?? new AssetLocation("sounds/player/build"), byPlayer.Entity, byPlayer, true, 16);
                 }
 
-                if (stack.StackSize > 0)
+                if (stack != null && stack.StackSize > 0)
                 {
                     Api.World.SpawnItemEntity(stack, Pos.ToVec3d().Add(0.5, 0.5, 0.5));
                 }
@@ -245,8 +270,29 @@ namespace FromGoldenCombs.BlockEntities
                 return true;
             }
 
-            return false;
+             return false;
         }
+
+        private bool TryTakeAll(IPlayer byPlayer, BlockSelection blockSel)
+        {
+            for (int i = 0; i < ((LangstrothSuper)block).getSelBoxes(type).Length - 1; i++)
+            {
+                ItemStack stack = inv[i].TakeOut(1);
+                if (byPlayer.InventoryManager.TryGiveItemstack(stack))
+                {
+                    AssetLocation sound = stack.Block?.Sounds?.Place;
+                    Api.World.PlaySoundAt(sound ?? new AssetLocation("sounds/player/build"), byPlayer.Entity, byPlayer, true, 16);
+                }
+
+                if (stack != null && stack.StackSize > 0)
+                {
+                    Api.World.SpawnItemEntity(stack, Pos.ToVec3d().Add(0.5, 0.5, 0.5));
+                }
+            }
+
+            return true;
+        }
+        
 
         protected override float[][] genTransformationMatrices()
         {
@@ -309,6 +355,7 @@ namespace FromGoldenCombs.BlockEntities
 
         public override void GetBlockInfo(IPlayer forPlayer, StringBuilder sb)
         {
+            ((LangstrothSuper)block).type = lastType;
             int index = forPlayer.CurrentBlockSelection.SelectionBoxIndex;
             if (forPlayer.CurrentBlockSelection == null)
             {
