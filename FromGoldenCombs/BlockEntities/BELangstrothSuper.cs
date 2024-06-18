@@ -16,7 +16,7 @@ namespace FromGoldenCombs.BlockEntities
     //TODO: Consider adding a lid object, or adding an animation showing the lid being slid off (This sounds neat). 
     //TODO: Find out how to get animation functioning
     //TODO: Fix selection box issue
-
+    
     class BELangstrothSuper : BlockEntityDisplay
     {
 
@@ -45,6 +45,7 @@ namespace FromGoldenCombs.BlockEntities
 
         public string Type => type;
 
+        public string lastType;
         public string Material => material;
         public string Material2 => material2;
 
@@ -93,11 +94,10 @@ namespace FromGoldenCombs.BlockEntities
         }
         public int[] getOrCreateUsableSlots()
         {
-            if (UsableSlots == null)
-            {
-                genUsableSlots();
+            if (lastType != type) {
+            lastType = type;
+            genUsableSlots();
             }
-
             return UsableSlots;
         }
 
@@ -107,7 +107,7 @@ namespace FromGoldenCombs.BlockEntities
             List<int> list = new();
             list.AddRange(slots);
             UsableSlots = list.ToArray();
-            Cuboidf[] selectionboxes = type == "open" ? (base.Block as LangstrothSuper).openselectionboxes : (base.Block as LangstrothSuper).closedselectionboxes;
+            Cuboidf[] selectionboxes = type=="open"?(base.Block as LangstrothSuper).openselectionboxes: (base.Block as LangstrothSuper).closedselectionboxes;
             UsableSelectionBoxes = new Cuboidf[selectionboxes.Length];
             for (int i = 0; i < selectionboxes.Length; i++)
             {
@@ -226,7 +226,7 @@ namespace FromGoldenCombs.BlockEntities
         private bool TryTake(IPlayer byPlayer, BlockSelection blockSel)
         {
             int index = blockSel.SelectionBoxIndex;
-
+            
             if (!inv[index].Empty)
             {
                 ItemStack stack = inv[index].TakeOut(1);
@@ -251,8 +251,8 @@ namespace FromGoldenCombs.BlockEntities
         protected override float[][] genTransformationMatrices()
         {
             tfMatrices = new float[Inventory.Count][];
-            Cuboidf[] selectionBoxes = type == "open" ? (base.Block as LangstrothSuper).openselectionboxes : (base.Block as LangstrothSuper).closedselectionboxes;
-            for (int i = 0; i < selectionBoxes.Length - 1; i++)
+            Cuboidf[] selectionBoxes = type == "open"?(base.Block as LangstrothSuper).openselectionboxes : (base.Block as LangstrothSuper).closedselectionboxes;
+            for (int i = 0; i < selectionBoxes.Length-1; i++)
             {
                 Cuboidf obj = selectionBoxes[i];
                 float midX = obj.MidX;
@@ -298,7 +298,7 @@ namespace FromGoldenCombs.BlockEntities
             RedrawAfterReceivingTreeAttributes(worldForResolving);
         }
 
-
+        
 
         public void OnTransformed(IWorldAccessor worldAccessor, ITreeAttribute tree, int degreeRotation, Dictionary<int, AssetLocation> oldBlockIdMapping, Dictionary<int, AssetLocation> oldItemIdMapping, EnumAxis? flipAxis)
         {
@@ -320,7 +320,7 @@ namespace FromGoldenCombs.BlockEntities
             }
             else if (index == 10)
             {
-
+                
                 sb.AppendLine("");
                 for (int i = 0; i < 10; i++)
                 {
@@ -331,7 +331,7 @@ namespace FromGoldenCombs.BlockEntities
                     }
                     else
                     {
-
+                        
                         sb.AppendLine(slot.Itemstack.GetName());
                     }
                 }
