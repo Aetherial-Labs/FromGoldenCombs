@@ -13,15 +13,11 @@ using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Util;
 using Vintagestory.GameContent;
-using static OpenTK.Graphics.OpenGL.GL;
 
 namespace FromGoldenCombs.BlockEntities
 {
     class BELangstrothStack : BlockEntityDisplay
     {
-        private float[] mat;
-        public float MeshAngleRad { get; set; }
-        private MeshData mesh;
 
         double harvestableAtTotalHours;
         double cooldownUntilTotalHours;
@@ -75,9 +71,7 @@ namespace FromGoldenCombs.BlockEntities
             RegisterGameTickListener(OnScanForFlowers, api.World.Rand.Next(5000) + 30000);
 
             block = Api.World.BlockAccessor.GetBlock(Pos, 0);
-            mat = Matrixf.Create().Translate(0.5f, 0.5f, 0.5f).RotateY(MeshAngleRad)
-                        .Translate(-0.5f, -0.5f, -0.5f)
-                        .Values;
+
             if (api.Side == EnumAppSide.Client)
             {
                 ICoreClientAPI capi = api as ICoreClientAPI;
@@ -646,6 +640,10 @@ namespace FromGoldenCombs.BlockEntities
             return (BELangstrothStack)Api.World.BlockAccessor.GetBlockEntity(bottomPos);
         }
 
+        //Rendering Processes
+        
+
+        //Active Hive Methods/Fields
         readonly Vec3d startPos = new();
         readonly Vec3d endPos = new();
         Vec3f minVelo = new();
@@ -931,36 +929,33 @@ namespace FromGoldenCombs.BlockEntities
             }
         }
 
-        public override bool OnTesselation(ITerrainMeshPool mesher, ITesselatorAPI tessThreadTesselator)
-        {
-            mesher.AddMeshData(mesh, mat);
-            base.OnTesselation(mesher, tessThreadTesselator);
-            return true;
-        }
+        readonly Matrixf mat = new();
 
-        public void OnTransformed(IWorldAccessor worldAccessor, ITreeAttribute tree, int degreeRotation, Dictionary<int, AssetLocation> oldBlockIdMapping, Dictionary<int, AssetLocation> oldItemIdMapping, EnumAxis? flipAxis)
-        {
-            MeshAngleRad = tree.GetFloat("meshAngleRad");
-            MeshAngleRad -= (float)degreeRotation * (MathF.PI / 180f);
-            tree.SetFloat("meshAngleRad", MeshAngleRad);
-        }
+        //public override bool OnTesselation(ITerrainMeshPool mesher, ITesselatorAPI tessThreadTesselator)
+        //{
+        //    mat.Identity();
+        //    mat.RotateYDeg(this.Block.Shape.rotateY);
+        //    return base.OnTesselation(mesher, tessThreadTesselator);
+        //}
 
         protected override float[][] genTransformationMatrices()
         {
-            tfMatrices = new float[Inventory.Count][];
-            Cuboidf[] selectionBoxes = (base.Block as LangstrothStack).SelectionBoxes;
-            for (int i = 0; i < selectionBoxes.Length; i++)
-            {
-                Cuboidf obj = selectionBoxes[i];
-                float midX = obj.MidX;
-                float midY = (i*0.3333f);
-                float midZ = obj.MidZ;
-                Vec3f vec3f = new Vec3f(midX, midY, midZ);
-                vec3f = new Matrixf().RotateY(MeshAngleRad).TransformVector(vec3f.ToVec4f(0f)).XYZ;
-                tfMatrices[i] = new Matrixf().Translate(vec3f.X, vec3f.Y, vec3f.Z).Translate(0.5f, 0f, 0.5f).RotateY(MeshAngleRad - MathF.PI).Values;
+            
+                float[][] tfMatrices = new float[3][];
+                for (int index = 0; index <= 2; index++)
+                {
+                    float x = 0;
+                    float z = 0;
+                    switch (this.Block.Variant["side"])
+                    {
+                        case "east": x = 0; break;
+                        case "west": x = 1; z = 1; break;
+                        case "north": z = 1; break;
+                        case "south": x = 1; break;
+                    }
+                    tfMatrices[index] = new Matrixf().Translate(x, 0.3333f * index, z).RotateYDeg(this.Block.Shape.rotateY).Values;
             }
-
-                return tfMatrices;
+            return tfMatrices;
         }
 
     }

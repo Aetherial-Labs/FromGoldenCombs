@@ -28,12 +28,10 @@ namespace FromGoldenCombs.Blocks.Langstroth
             if (!slot.Empty && slot.Itemstack.Collectible is Block && IsValidLangstroth(slot.Itemstack.Block))
             {
                 ItemStack langstrothblock = api.World.BlockAccessor.GetBlock(blockSel.Position).OnPickBlock(world, blockSel.Position);
-
-                String test = blockSel.Position.FacingFrom(byPlayer.Entity.Pos.AsBlockPos).Opposite.ToString();
-                Block langstrothstackblock = api.World.BlockAccessor.GetBlock(new AssetLocation("fromgoldencombs", "langstrothstack-two" + "-" + test));
+                Block langstrothstackblock = api.World.BlockAccessor.GetBlock(new AssetLocation("fromgoldencombs", "langstrothstack-two-east"));
                 api.World.BlockAccessor.SetBlock(langstrothstackblock.BlockId, blockSel.Position);
                 BELangstrothStack lStack = (BELangstrothStack)api.World.BlockAccessor.GetBlockEntity(blockSel.Position);
-                lStack.InitializePut(langstrothblock, slot);
+                //lStack.InitializePut(langstrothblock, slot);
             }
             return true;
         }

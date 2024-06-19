@@ -154,6 +154,27 @@ namespace FromGoldenCombs.BlockEntities
             return false;
         }
 
+       
+
+        //protected override float[][] genTransformationMatrices()
+        //{
+        //    tfMatrices = new float[Inventory.Count][];
+        //    Cuboidf[] selectionBoxes = (base.Block as FrameRack).selectionboxes;
+        //    for (int i = 0; i < Inventory.Count; i++)
+        //    {
+        //        Cuboidf obj = selectionBoxes[i];
+        //        float midX = obj.MidX;
+        //        float midY = 0.069f;
+        //        float midZ = obj.MidZ;
+        //        Vec3f vec3f = new Vec3f(midX, midY, midZ);
+        //        vec3f = new Matrixf().RotateY(MeshAngleRad).TransformVector(vec3f.ToVec4f(0f)).XYZ;
+        //        tfMatrices[i] = new Matrixf().Translate(vec3f.X, vec3f.Y, vec3f.Z).Translate(0.5f, 0f, 0.5f).RotateY(MeshAngleRad - MathF.PI).Values;
+        //    }
+
+        //    return tfMatrices;
+        //}
+
+
         public override bool OnTesselation(ITerrainMeshPool mesher, ITesselatorAPI tessThreadTesselator)
         {
             mesher.AddMeshData(mesh, mat);
