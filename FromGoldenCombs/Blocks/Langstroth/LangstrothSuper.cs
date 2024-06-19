@@ -242,8 +242,8 @@ namespace FromGoldenCombs.Blocks
             {
                 StringBuilder sb = new();
                 Block block = world.BlockAccessor.GetBlock(pos);
-                BELangstrothSuper be = world.BlockAccessor.GetBlockEntity<BELangstrothSuper>(pos);
-                return be==null? null :Lang.Get(be.getMaterial().UcFirst()) + " & " + Lang.Get(be.getMaterial2().UcFirst() + sb.AppendLine() + OnPickBlock(world, pos)?.GetName());
+                BlockEntity be = world.BlockAccessor.GetBlockEntity(pos);
+                return !(be is BELangstrothSuper)? null :Lang.Get(((BELangstrothSuper)be).getMaterial().UcFirst()) + " & " + Lang.Get(((BELangstrothSuper)be).getMaterial2().UcFirst() + sb.AppendLine() + OnPickBlock(world, pos)?.GetName());
             }
 
             public override WorldInteraction[] GetPlacedBlockInteractionHelp(IWorldAccessor world, BlockSelection selection, IPlayer forPlayer)
