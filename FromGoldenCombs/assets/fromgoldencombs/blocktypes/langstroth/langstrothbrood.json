@@ -29,8 +29,9 @@
   ],
   "textures": {		
       "primary": {"base": "game:block/wood/debarked/{primary}" },
-			"accent": {"base": "game:block/wood/debarked/{accent}" }
-	},
+			"accent": {"base": "game:block/wood/debarked/{accent}" },
+      "beeswax": {"base": "game:item/resource/beeswaxcrate"}
+  },
   "shapeByType": {
   "*-north": {
      "base": "block/hive/langstroth/langstrothbrood",

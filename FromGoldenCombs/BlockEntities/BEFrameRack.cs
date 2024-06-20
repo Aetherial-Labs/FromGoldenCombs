@@ -10,8 +10,6 @@ using Vintagestory.API.MathTools;
 using Vintagestory.API.Util;
 using Vintagestory.GameContent;
 using FromGoldenCombs.Blocks;
-using System.Diagnostics;
-using Vintagestory;
 
 namespace FromGoldenCombs.BlockEntities
 {
@@ -58,7 +56,7 @@ namespace FromGoldenCombs.BlockEntities
 
         public string getMaterial2()
         {
-            return material2;
+            return material2;          
         }
 
         public override void Initialize(ICoreAPI api)

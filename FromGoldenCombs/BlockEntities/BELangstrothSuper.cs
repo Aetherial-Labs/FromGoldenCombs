@@ -1,6 +1,5 @@
 ﻿
 using FromGoldenCombs.Blocks;
-using static OpenTK.Graphics.OpenGL.GL;
 using System.Collections.Generic;
 using System.Text;
 using System;
@@ -10,8 +9,6 @@ using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.GameContent;
-using System.Runtime.CompilerServices;
-using Vintagestory.Client.NoObf;
 
 namespace FromGoldenCombs.BlockEntities
 {

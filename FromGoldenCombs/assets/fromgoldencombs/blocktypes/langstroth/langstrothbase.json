@@ -29,8 +29,7 @@
         "name": "HorizontalOrientable",
         "properties": { "dropBlockFace": "east" }
     },
-    { "name": "Unstable" },
-    { "name": "attributeRenderHandler" }
+    { "name": "Unstable" }
   ],
   "heldTpIdleAnimation": "holdbothhandslarge",
   "heldTpUseAnimation": "twohandplaceblock",

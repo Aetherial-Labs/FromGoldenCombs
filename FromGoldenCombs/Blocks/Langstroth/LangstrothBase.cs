@@ -237,11 +237,11 @@ namespace VFromGoldenCombs.Blocks.Langstroth
         {
             BELangstrothBase beLangstrothBase = (BELangstrothBase)world.BlockAccessor.GetBlockEntity(blockSel.Position) as BELangstrothBase;
 
-            //if (beLangstrothBase is BELangstrothBase)
-            //{
-            //    return beLangstrothBase.OnInteract(byPlayer, blockSel);
-            //}
-            return false;
+            if (beLangstrothBase is BELangstrothBase && byPlayer.InventoryManager.ActiveHotbarSlot.Empty)
+            {
+                return beLangstrothBase.OnInteract(byPlayer, blockSel);
+            }
+            return base.OnBlockInteractStart(world, byPlayer, blockSel);
         }
 
         public override string GetPlacedBlockName(IWorldAccessor world, BlockPos pos)
@@ -249,7 +249,7 @@ namespace VFromGoldenCombs.Blocks.Langstroth
             StringBuilder sb = new();
             Block block = world.BlockAccessor.GetBlock(pos);
             BELangstrothBase be = world.BlockAccessor.GetBlockEntity<BELangstrothBase>(pos);
-            if (be == null) return null;
+            if (be == null || block is LangstrothBase) return null;
             return Lang.Get(be.getMaterial().UcFirst()) + " & " + Lang.Get(be.getMaterial2().UcFirst() + sb.AppendLine() + OnPickBlock(world, pos)?.GetName());
         }
     }

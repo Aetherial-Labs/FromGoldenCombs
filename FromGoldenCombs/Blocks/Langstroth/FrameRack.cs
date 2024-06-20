@@ -188,12 +188,6 @@ namespace FromGoldenCombs.Blocks
                 base.GetDecal(world, pos, decalTexSource, ref decalModelData, ref blockModelData);
             }
         }
-
-        public override void OnNeighbourBlockChange(IWorldAccessor world, BlockPos pos, BlockPos neibpos)
-        {
-            base.OnNeighbourBlockChange(world, pos, neibpos);
-        }
-
         public override void OnBeforeRender(ICoreClientAPI capi, ItemStack itemstack, EnumItemRenderTarget target, ref ItemRenderInfo renderinfo)
         {
             base.OnBeforeRender(capi, itemstack, target, ref renderinfo);
@@ -211,10 +205,14 @@ namespace FromGoldenCombs.Blocks
             renderinfo.ModelRef = value;
         }
 
-        public override bool DoParticalSelection(IWorldAccessor world, BlockPos pos)
+        public override void OnNeighbourBlockChange(IWorldAccessor world, BlockPos pos, BlockPos neibpos)
         {
-            return true;
+            base.OnNeighbourBlockChange(world, pos, neibpos);
         }
+
+        
+
+        
 
         public override ItemStack OnPickBlock(IWorldAccessor world, BlockPos pos)
         {

@@ -8,6 +8,7 @@
 	"textureSizes": {
 	},
 	"textures": {
+		 "beeswax":"game:item\resource\beeswax"
 	},
 	"elements": [
 		{

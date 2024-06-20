@@ -34,7 +34,7 @@
   "lightAbsorption": 0,
   "sideopaque": { "all": false },
   "sidesolid": { "all": false },
-  "blockmaterial": "Ceramic",
+  "blockmaterial": "Wood",
   "sounds": { "place": "game:block/planks" },
   "groundTransform": { "scale": 2.01 },
   "fpHandTransform": {
@@ -124,7 +124,7 @@
     ]
   },
   "selectionboxesByType": {
-    0012*-one-*": [+
+    "*-one-*": [
       {
         "x1": 0.0746,
         "y1": 0,
