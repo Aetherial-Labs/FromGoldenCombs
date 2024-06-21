@@ -13,19 +13,12 @@ using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Util;
 using Vintagestory.GameContent;
-using static OpenTK.Graphics.OpenGL.GL;
 
 namespace FromGoldenCombs.BlockEntities
 {
     class BELangstrothStack : BlockEntityDisplay
     {
-        private float[] mat;
-        public float MeshAngleRad { get; set; }
-        private MeshData mesh;
-        public string Type => type;
-        private string type;
 
-        private Block block;
         double harvestableAtTotalHours;
         double cooldownUntilTotalHours;
         public bool Harvestable;
@@ -72,7 +65,7 @@ namespace FromGoldenCombs.BlockEntities
 
         public override void Initialize(ICoreAPI api)
         {
-            block = api.World.BlockAccessor.GetBlock(Pos, 0);
+            Block block = api.World.BlockAccessor.GetBlock(Pos, 0);
             base.Initialize(api);
             RegisterGameTickListener(TestHarvestable, 6000);
             RegisterGameTickListener(OnScanForFlowers, api.World.Rand.Next(5000) + 30000);
@@ -270,40 +263,23 @@ namespace FromGoldenCombs.BlockEntities
             return linedFrames;
         }
 
-        public bool InitializePut(ItemStack first, ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel)
+        public bool InitializePut(ItemStack first, ItemSlot slot)
         {
-            
             inv[0].Itemstack = first;
             MarkDirty(true);
             updateMeshes();
             this.TryPut(slot);
-            //InitLangstrothStack();
             UpdateStackSize();
             CountHarvestable();
             return true;
 
         }
 
-
-        //private void InitLangstrothStack()
-        //{
-        //    if (Api != null && base.Block is LangstrothStack)
-        //    {
-        //        if (Api.Side == EnumAppSide.Client)
-        //        {
-        //            mesh = (base.Block as LangstrothStack).GetOrCreateMesh();
-        //            mat = Matrixf.Create().Translate(0.5f, 0.5f, 0.5f).RotateY(MeshAngleRad)
-        //                .Translate(-0.5f, -0.5f, -0.5f)
-        //                .Values;
-        //        }
-        //    }
-        //}
-
         private bool TryPut(ItemSlot slot)
         {
             int index = 0;
 
-            
+
             while (index < inv.Count - 1 && !inv[index].Empty) //Cycle through indices until reach an empty index, or the top index
             {
                 index++;
@@ -526,17 +502,19 @@ namespace FromGoldenCombs.BlockEntities
             BELangstrothStack topStack = GetTopStack();
             BELangstrothStack bottomStack = GetBottomStack();
             CountHarvestable();
-           //Check bottomStack's bottom index for a LangstrothBase
-            if (!(bottomStack.inv[0].Itemstack.Block is LangstrothBase)) {
+            //Check bottomStack's bottom index for a LangstrothBase
+            if (!(bottomStack.inv[0].Itemstack.Block is LangstrothBase))
+            {
                 topStack.updateMeshes();
                 bottomStack.updateMeshes();
                 ResetHive();
                 return false;
-            }     
+            }
 
-        //Check topStack's top Index for populated brood box
+            //Check topStack's top Index for populated brood box
             Block topBlock = topStack?.inv[topStack.StackSize() - 1].Itemstack.Block;
-            if (!(topBlock is LangstrothBrood) && topBlock.Variant["populated"] == "empty"){
+            if (!(topBlock is LangstrothBrood) && topBlock.Variant["populated"] == "empty")
+            {
                 topStack.updateMeshes();
                 bottomStack.updateMeshes();
                 ResetHive();
@@ -573,17 +551,17 @@ namespace FromGoldenCombs.BlockEntities
                                 return bottomStack.topIsPopBrood;
                             }
 
-                            if(!bottomStack.topIsPopBrood || (curBE.inv[index] == bottomStack.inv[0] && !(curBE.inv[index].Itemstack.Block is LangstrothSuper)))
+                            if (!bottomStack.topIsPopBrood || (curBE.inv[index] == bottomStack.inv[0] && !(curBE.inv[index].Itemstack.Block is LangstrothSuper)))
                             {
                                 return false;
-                            } 
+                            }
                         }
                     }
-                        downCount++;
+                    downCount++;
                     curBE = (BELangstrothStack)Api.World.BlockAccessor.GetBlockEntity(topStack.Pos.DownCopy(downCount));
                 }
                 return bottomStack.topIsPopBrood;
-            } 
+            }
             else if ((topStack.inv[2].Itemstack?.Block is LangstrothBrood && topStack.inv[2].Itemstack.Block.Variant["populated"] == "populated")
                         && topStack.inv[0].Itemstack.Block is LangstrothBase)
             {
@@ -664,6 +642,10 @@ namespace FromGoldenCombs.BlockEntities
             return (BELangstrothStack)Api.World.BlockAccessor.GetBlockEntity(bottomPos);
         }
 
+        //Rendering Processes
+
+
+        //Active Hive Methods/Fields
         readonly Vec3d startPos = new();
         readonly Vec3d endPos = new();
         Vec3f minVelo = new();
@@ -738,14 +720,14 @@ namespace FromGoldenCombs.BlockEntities
                 {
                     cooldownUntilTotalHours = worldTime + 4 / 2 * 24;
                 }
-                if (!Harvestable && harvestableAtTotalHours == 0 && hivePopSize > EnumHivePopSize.Poor && CountLinedFrames()>0)
+                if (!Harvestable && harvestableAtTotalHours == 0 && hivePopSize > EnumHivePopSize.Poor && CountLinedFrames() > 0)
                 {
                     harvestableAtTotalHours = worldTime + HarvestableTime(harvestBase);
                 }
                 else if (!Harvestable && worldTime > harvestableAtTotalHours && hivePopSize > EnumHivePopSize.Poor && CountLinedFrames() > 0)
                 {
                     Random rand = new();
-                    GetTopStack().UpdateFrames(Math.Max(1,rand.Next(FromGoldenCombsConfig.Current.minFramePerCycle, FromGoldenCombsConfig.Current.maxFramePerCycle)*((int)this.hivePopSize/2)));
+                    GetTopStack().UpdateFrames(Math.Max(1, rand.Next(FromGoldenCombsConfig.Current.minFramePerCycle, FromGoldenCombsConfig.Current.maxFramePerCycle) * ((int)this.hivePopSize / 2)));
                     harvestableAtTotalHours = worldTime + HarvestableTime(harvestBase);
                     CountHarvestable();
                 }
@@ -754,7 +736,7 @@ namespace FromGoldenCombs.BlockEntities
 
         private double HarvestableTime(float i)
         {
-            i = (i * Api.World.Calendar.DaysPerMonth / 30f)*Api.World.Calendar.HoursPerDay;
+            i = (i * Api.World.Calendar.DaysPerMonth / 30f) * Api.World.Calendar.HoursPerDay;
             Random rand = new();
             return (i * .75) + ((i * .2) * rand.NextDouble());
         }
@@ -851,7 +833,7 @@ namespace FromGoldenCombs.BlockEntities
             MarkDirty();
         }
 
-//Misc Methods
+        //Misc Methods
         public override void ToTreeAttributes(ITreeAttribute tree)
         {
             base.ToTreeAttributes(tree);
@@ -943,42 +925,40 @@ namespace FromGoldenCombs.BlockEntities
                         sb.AppendLine(Lang.Get("fromgoldencombs:findflowers"));
                     }
                 }
-            } else
+            }
+            else
             {
                 bottomStack.GetBlockInfo(forPlayer, sb);
             }
         }
 
+        readonly Matrixf mat = new();
+
         public override bool OnTesselation(ITerrainMeshPool mesher, ITesselatorAPI tessThreadTesselator)
         {
-            mesher.AddMeshData(mesh, mat);
-            base.OnTesselation(mesher, tessThreadTesselator);
-            return true;
-        }
-
-        public void OnTransformed(IWorldAccessor worldAccessor, ITreeAttribute tree, int degreeRotation, Dictionary<int, AssetLocation> oldBlockIdMapping, Dictionary<int, AssetLocation> oldItemIdMapping, EnumAxis? flipAxis)
-        {
-            MeshAngleRad = tree.GetFloat("meshAngleRad");
-            MeshAngleRad -= (float)degreeRotation * (MathF.PI / 180f);
-            tree.SetFloat("meshAngleRad", MeshAngleRad);
+            mat.Identity();
+            mat.RotateYDeg(this.Block.Shape.rotateY);
+            return base.OnTesselation(mesher, tessThreadTesselator);
         }
 
         protected override float[][] genTransformationMatrices()
         {
-            tfMatrices = new float[Inventory.Count][];
-            Cuboidf[] selectionBoxes = (base.Block as LangstrothStack).SelectionBoxes;
-            for (int i = 0; i < selectionBoxes.Length; i++)
-            {
-                Cuboidf obj = selectionBoxes[i];
-                float midX = obj.MidX;
-                float midY = (i*0.3333f);
-                float midZ = obj.MidZ;
-                Vec3f vec3f = new Vec3f(midX, midY, midZ);
-                vec3f = new Matrixf().RotateY(MeshAngleRad).TransformVector(vec3f.ToVec4f(0f)).XYZ;
-                tfMatrices[i] = new Matrixf().Translate(vec3f.X, vec3f.Y, vec3f.Z).Translate(0.5f, 0f, 0.5f).RotateY(MeshAngleRad- MathF.PI).Values;
-            }
 
-                return tfMatrices;
+            float[][] tfMatrices = new float[3][];
+            for (int index = 0; index <= 2; index++)
+            {
+                float x = 0;
+                float z = 0;
+                switch (this.Block.Variant["side"])
+                {
+                    case "east": x = 0; break;
+                    case "west": x = 1; z = 1; break;
+                    case "north": z = 1; break;
+                    case "south": x = 1; break;
+                }
+                tfMatrices[index] = new Matrixf().Translate(x, 0.3333f * index, z).RotateYDeg(this.Block.Shape.rotateY).Values;
+            }
+            return tfMatrices;
         }
 
     }
