@@ -1,4 +1,4 @@
-﻿using FromGoldenCombs.config;
+﻿using FromGoldenCombs.Util.config;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Text;
 using Vintagestory.API.Common;
 
-namespace FromGoldenCombs.config
+namespace FromGoldenCombs.Util.config
 {
     class FromGoldenCombsConfig
     {
@@ -51,10 +51,10 @@ namespace FromGoldenCombs.config
         //private ArrayList HiveSeasons = new();
 
         public FromGoldenCombsConfig()
-        {}
+        { }
 
         public static FromGoldenCombsConfig Current { get; set; }
-       
+
 
         public static FromGoldenCombsConfig GetDefault()
         {
@@ -65,8 +65,8 @@ namespace FromGoldenCombs.config
             defaultConfig.LangstrothDaysToHarvestIn30DayMonths = 7f;
             defaultConfig.SkepMinYield = 1;
             defaultConfig.SkepMaxYield = 3;
-            defaultConfig.CeramicPotMinYield= 2;
-            defaultConfig.CeramicPotMaxYield= 4;
+            defaultConfig.CeramicPotMinYield = 2;
+            defaultConfig.CeramicPotMaxYield = 4;
             defaultConfig.minFramePerCycle = 2;
             defaultConfig.maxFramePerCycle = 3;
             defaultConfig.FrameMinYield = 2;

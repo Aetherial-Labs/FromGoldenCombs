@@ -1,0 +1,202 @@
+﻿using FromGoldenCombs.Blocks.Langstroth;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Vintagestory.API.Client;
+using Vintagestory.API.Common;
+using Vintagestory.API.Datastructures;
+using Vintagestory.API.MathTools;
+using Vintagestory.GameContent;
+
+namespace FromGoldenCombs.BlockEntities
+{
+
+    internal class BELangstrothBrood : BlockEntity
+    {
+        readonly InventoryGeneric inv;
+        //public override string InventoryClassName => "LangstrothBrood";
+
+        private Block block;
+        //public override InventoryBase Inventory => inv;
+        private MeshData mesh;
+
+        private string type;
+
+        private string material;
+
+        private string material2;
+
+        private float[] mat;
+
+        private int[] UsableSlots;
+
+        private Cuboidf[] UsableSelectionBoxes;
+
+        //public override string AttributeTransformCode => "onframerackTransform";
+
+        public float MeshAngleRad { get; set; }
+
+        public string Type => type;
+
+        public string Material => material;
+        public string Material2 => material2;
+
+        public BELangstrothBrood()
+        {
+        }
+
+        public string getMaterial()
+        {
+            return material;
+        }
+
+        public string getMaterial2()
+        {
+            return material2;
+        }
+
+        public override void Initialize(ICoreAPI api)
+        {
+
+            block = api.World.BlockAccessor.GetBlock(Pos, 0);
+            base.Initialize(api);
+            //if (mesh == null && type != null)
+            //{
+            //    initLangstrothBrood();
+            //}
+        }
+
+        //private void initLangstrothBrood()
+        //{
+        //    if (Api != null && type != null && base.Block is LangstrothBrood)
+        //    {
+        //        if (Api.Side == EnumAppSide.Client)
+        //        {
+        //            mesh = (base.Block as LangstrothBrood).GetOrCreateMesh(type, material, material2);
+        //            mat = Matrixf.Create().Translate(0.5f, 0.5f, 0.5f).RotateY(MeshAngleRad)
+        //                .Translate(-0.5f, -0.5f, -0.5f)
+        //                .Values;
+        //        }
+        //    }
+        //}
+
+        //public int[] getOrCreateUsableSlots()
+        //{
+        //    if (UsableSlots == null)
+        //    {
+        //        genUsableSlots();
+        //    }
+
+        //    return UsableSlots;
+        //}
+
+        //private void genUsableSlots()
+        //{
+        //    int[] slots = (base.Block as LangstrothBrood).slots;
+        //    List<int> list = new();
+        //    list.AddRange(slots);
+        //    UsableSlots = list.ToArray();
+        //    Cuboidf[] selectionboxes = (base.Block as LangstrothBrood).selectionboxes;
+        //    UsableSelectionBoxes = new Cuboidf[selectionboxes.Length];
+        //    for (int i = 0; i < selectionboxes.Length; i++)
+        //    {
+        //        UsableSelectionBoxes[i] = selectionboxes[i].RotatedCopy(0f, MeshAngleRad * (180f / MathF.PI), 0f, new Vec3d(0.5, 0.5, 0.5));
+        //    }
+        //}
+
+        public override void OnBlockPlaced(ItemStack byItemStack = null)
+        {
+            base.OnBlockPlaced(byItemStack);
+            type = byItemStack?.Attributes.GetString("type");
+            material = byItemStack?.Attributes.GetString("material");
+            material2 = byItemStack?.Attributes.GetString("material2");
+            //initLangstrothBrood();
+        }
+
+        public override void OnBlockBroken(IPlayer byPlayer)
+        {
+            // Don't drop inventory contents
+        }
+
+        //public Cuboidf[] getOrCreateSelectionBoxes()
+        //{
+        //    getOrCreateUsableSlots();
+        //    return UsableSelectionBoxes;
+        //}
+
+        internal bool OnInteract(IPlayer byPlayer, BlockSelection blockSel)
+        {
+
+            ItemSlot slot = byPlayer.InventoryManager.ActiveHotbarSlot;
+            CollectibleObject colObj = slot.Itemstack?.Collectible;
+            
+            BlockContainer block = Api.World.BlockAccessor.GetBlock(blockSel.Position, 0) as BlockContainer;
+            int index = blockSel.SelectionBoxIndex;
+            if (slot.Empty
+                     && (int)slot.StorageType == 2
+                     && byPlayer.InventoryManager.TryGiveItemstack(block.OnPickBlock(Api.World, blockSel.Position)))
+            {
+                Api.World.BlockAccessor.SetBlock(0, blockSel.Position);
+                MarkDirty(true);
+                return true;
+            } else if (colObj?.FirstCodePart() == "skep" && colObj.Variant["type"] == "populated" && this.type == "empty") {
+                this.type = "populated";
+                slot.TakeOutWhole();
+            }
+            return false;
+        }
+
+        public override bool OnTesselation(ITerrainMeshPool mesher, ITesselatorAPI tessThreadTesselator)
+        {
+            mesher.AddMeshData(mesh, mat);
+            base.OnTesselation(mesher, tessThreadTesselator);
+            return true;
+        }
+
+        public override void ToTreeAttributes(ITreeAttribute tree)
+        {
+            base.ToTreeAttributes(tree);
+            tree.SetString("type", type);
+            tree.SetString("material", material);
+            tree.SetString("material2", material2);
+            tree.SetFloat("meshAngleRad", MeshAngleRad);
+            tree.SetBool("usableSlotsDirty", UsableSlots == null);
+        }
+
+        public override void FromTreeAttributes(ITreeAttribute tree, IWorldAccessor worldForResolving)
+        {
+            base.FromTreeAttributes(tree, worldForResolving);
+            type = tree.GetString("type");
+            material = tree.GetString("material");
+            material2 = tree.GetString("material2");
+            MeshAngleRad = tree.GetFloat("meshAngleRad");
+            if (tree.GetBool("usableSlotsDirty"))
+            {
+                UsableSlots = null;
+            }
+
+            //initLangstrothBrood();
+            RedrawAfterReceivingTreeAttributes(worldForResolving);
+        }
+
+        protected virtual void RedrawAfterReceivingTreeAttributes(IWorldAccessor worldForResolving)
+        {
+            if (worldForResolving.Side == EnumAppSide.Client && Api != null)
+            {
+                MarkDirty(redrawOnClient: true);
+            }
+        }
+
+        public override void GetBlockInfo(IPlayer forPlayer, StringBuilder sb)
+        {
+                base.GetBlockInfo(forPlayer, sb);
+        }
+
+        public void OnTransformed(IWorldAccessor worldAccessor, ITreeAttribute tree, int degreeRotation, Dictionary<int, AssetLocation> oldBlockIdMapping, Dictionary<int, AssetLocation> oldItemIdMapping, EnumAxis? flipAxis)
+        {
+            MeshAngleRad = tree.GetFloat("meshAngleRad");
+            MeshAngleRad -= (float)degreeRotation * (MathF.PI / 180f);
+            tree.SetFloat("meshAngleRad", MeshAngleRad);
+        }
+    }
+}

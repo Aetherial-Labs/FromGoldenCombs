@@ -1,12 +1,12 @@
 ﻿using Vintagestory.API.Common;
 using FromGoldenCombs.Blocks;
 using FromGoldenCombs.BlockEntities;
-using FromGoldenCombs.config;
 using FromGoldenCombs.Blocks.Langstroth;
 using FromGoldenCombs.Items;
 using VFromGoldenCombs.Blocks.Langstroth;
 using Vintagestory.API.Config;
 using Vintagestory.GameContent;
+using FromGoldenCombs.Util.config;
 
 namespace FromGoldenCombs
 {

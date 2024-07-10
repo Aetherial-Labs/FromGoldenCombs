@@ -1,5 +1,4 @@
-﻿using FromGoldenCombs.config;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 using System.Text;
 using Vintagestory.API.Client;
@@ -10,10 +9,11 @@ using Vintagestory.API.MathTools;
 using Vintagestory.API.Util;
 using Vintagestory.GameContent;
 using FromGoldenCombs.Blocks;
+using FromGoldenCombs.Util.config;
 
 namespace FromGoldenCombs.BlockEntities
 {
-    
+
     class BEFrameRack : BlockEntityDisplay
     {
         readonly InventoryGeneric inv;
@@ -89,6 +89,13 @@ namespace FromGoldenCombs.BlockEntities
             }
         }
 
+        #region SelectionBox Methods
+        public Cuboidf[] getOrCreateSelectionBoxes()
+        {
+            getOrCreateUsableSlots();
+            return UsableSelectionBoxes;
+        }
+
         public int[] getOrCreateUsableSlots()
         {
             if (UsableSlots == null)
@@ -112,6 +119,7 @@ namespace FromGoldenCombs.BlockEntities
                 UsableSelectionBoxes[i] = selectionboxes[i].RotatedCopy(0f, MeshAngleRad * (180f / MathF.PI), 0f, new Vec3d(0.5, 0.5, 0.5));
             }
         }
+        #endregion
 
         public override void OnBlockPlaced(ItemStack byItemStack = null)
         {
@@ -127,11 +135,7 @@ namespace FromGoldenCombs.BlockEntities
             // Don't drop inventory contents
         }
 
-        public Cuboidf[] getOrCreateSelectionBoxes()
-        {
-            getOrCreateUsableSlots();
-            return UsableSelectionBoxes;
-        }
+        
 
         internal bool OnInteract(IPlayer byPlayer, BlockSelection blockSel)
         {

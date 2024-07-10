@@ -1,7 +1,6 @@
 ﻿using FromGoldenCombs.Blocks;
 using FromGoldenCombs.Blocks.Langstroth;
-using FromGoldenCombs.config;
-using FromGoldenCombs.Items;
+using FromGoldenCombs.Util.config;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,13 +11,18 @@ using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Util;
+using Vintagestory.Client.NoObf;
 using Vintagestory.GameContent;
+using static OpenTK.Graphics.OpenGL.GL;
 
 namespace FromGoldenCombs.BlockEntities
 {
     class BELangstrothStack : BlockEntityDisplay
     {
+        private int[] UsableSlots;
 
+        private Cuboidf[] UsableSelectionBoxes;
+        public float MeshAngleRad { get; set; }
         double harvestableAtTotalHours;
         double cooldownUntilTotalHours;
         public bool Harvestable;
@@ -69,19 +73,46 @@ namespace FromGoldenCombs.BlockEntities
             base.Initialize(api);
             RegisterGameTickListener(TestHarvestable, 6000);
             RegisterGameTickListener(OnScanForFlowers, api.World.Rand.Next(5000) + 30000);
-
             block = Api.World.BlockAccessor.GetBlock(Pos, 0);
 
             if (api.Side == EnumAppSide.Client)
             {
                 ICoreClientAPI capi = api as ICoreClientAPI;
-                //Block ownBlock = block;
-                //Shape shape = capi.Assets.TryGet(new AssetLocation("fromgoldencombs", "shapes/block/hive/langstroth/langstrothstack.json")).ToObject<Shape>();
 
                 if (api.Side == EnumAppSide.Client)
                 {
                     RegisterGameTickListener(SpawnBeeParticles, 300);
                 }
+            }
+        }
+
+        public Cuboidf[] getOrCreateSelectionBoxes()
+        {
+            getOrCreateUsableSlots();
+            return UsableSelectionBoxes;
+        }
+
+        public int[] getOrCreateUsableSlots()
+        {
+            if (UsableSlots == null)
+            {
+                genUsableSlots();
+            }
+
+            return UsableSlots;
+        }
+
+        private void genUsableSlots()
+        {
+            int[] slots = (base.Block as LangstrothStack).slots;
+            List<int> list = new();
+            list.AddRange(slots);
+            UsableSlots = list.ToArray();
+            Cuboidf[] selectionboxes = (base.Block as LangstrothStack).selectionboxes;
+            UsableSelectionBoxes = new Cuboidf[selectionboxes.Length];
+            for (int i = 0; i < selectionboxes.Length; i++)
+            {
+                UsableSelectionBoxes[i] = selectionboxes[i].RotatedCopy(0f, MeshAngleRad * (180f / MathF.PI), 0f, new Vec3d(0.5, 0.5, 0.5));
             }
         }
 
@@ -110,7 +141,7 @@ namespace FromGoldenCombs.BlockEntities
             }
             else if (isLangstroth && !IsStackFull())
             {
-                if (TryPut(slot)) //Attempt to place super either in the current stack,
+                if (TryPut(slot, GetMeshAngleRad())) //Attempt to place super either in the current stack,
                                   //any stacks above this, or as a new stack above the
                                   //topmost stack if the block at that position is an air block.
                 {
@@ -266,16 +297,96 @@ namespace FromGoldenCombs.BlockEntities
         public bool InitializePut(ItemStack first, ItemSlot slot)
         {
             inv[0].Itemstack = first;
+            Dictionary<string, MeshData> orCreate = ObjectCacheUtil.GetOrCreate(Api, "langstrothStackMeshes", () => new Dictionary<string, MeshData>());
+
             MarkDirty(true);
             updateMeshes();
-            this.TryPut(slot);
+            this.TryPut(slot, GetMeshAngleRad());
+            //Incomplete Experiment, does get the name of the mesh, but other information isn't available.
+            for (int i = 0; i < Inventory.Count; i++)
+            {
+                if (!Inventory[i].Empty)
+                {
+                    orCreate.Add(Inventory[i].Itemstack.GetName().ToString(), getOrCreateMesh(Inventory[i].Itemstack, i));
+                }
+            }
             UpdateStackSize();
             CountHarvestable();
             return true;
 
         }
 
-        private bool TryPut(ItemSlot slot)
+        protected virtual MeshData getOrCreateMesh(ItemStack stack, int index)
+        {
+            InventoryItemRenderer
+            MeshData modeldata = getMesh(stack);
+            if (modeldata != null)
+            {
+                return modeldata;
+            }
+
+            if (stack.Collectible is IContainedMeshSource containedMeshSource)
+            {
+                modeldata = containedMeshSource.GenMesh(stack, capi.BlockTextureAtlas, Pos);
+            }
+
+            if (modeldata == null)
+            {
+                ICoreClientAPI coreClientAPI = Api as ICoreClientAPI;
+                if (stack.Class == EnumItemClass.Block)
+                {
+                    modeldata = coreClientAPI.TesselatorManager.GetDefaultBlockMesh(stack.Block).Clone();
+                }
+                else
+                {
+                    nowTesselatingObj = stack.Collectible;
+                    nowTesselatingShape = null;
+                    if (stack.Item.Shape?.Base != null)
+                    {
+                        nowTesselatingShape = coreClientAPI.TesselatorManager.GetCachedShape(stack.Item.Shape.Base);
+                    }
+
+                    coreClientAPI.Tesselator.TesselateItem(stack.Item, out modeldata, this);
+                    modeldata.RenderPassesAndExtraBits.Fill((short)2);
+                }
+            }
+
+            JsonObject attributes = stack.Collectible.Attributes;
+            if (attributes != null && attributes[AttributeTransformCode].Exists)
+            {
+                ModelTransform modelTransform = stack.Collectible.Attributes?[AttributeTransformCode].AsObject<ModelTransform>();
+                modelTransform.EnsureDefaultValues();
+                modeldata.ModelTransform(modelTransform);
+            }
+            else if (AttributeTransformCode == "onshelfTransform")
+            {
+                JsonObject attributes2 = stack.Collectible.Attributes;
+                if (attributes2 != null && attributes2["onDisplayTransform"].Exists)
+                {
+                    ModelTransform modelTransform2 = stack.Collectible.Attributes?["onDisplayTransform"].AsObject<ModelTransform>();
+                    modelTransform2.EnsureDefaultValues();
+                    modeldata.ModelTransform(modelTransform2);
+                }
+            }
+
+            if (stack.Class == EnumItemClass.Item && (stack.Item.Shape == null || stack.Item.Shape.VoxelizeTexture))
+            {
+                modeldata.Rotate(new Vec3f(0.5f, 0.5f, 0.5f), MathF.PI / 2f, 0f, 0f);
+                modeldata.Scale(new Vec3f(0.5f, 0.5f, 0.5f), 0.33f, 0.33f, 0.33f);
+                modeldata.Translate(0f, -15f / 32f, 0f);
+            }
+
+            string meshCacheKey = getMeshCacheKey(stack);
+            MeshCache[meshCacheKey] = modeldata;
+            return modeldata;
+        }
+
+        private float GetMeshAngleRad()
+        {
+            return MeshAngleRad;
+        }
+
+        private bool TryPut(ItemSlot slot, float meshAngleRad)
         {
             int index = 0;
 
@@ -312,7 +423,7 @@ namespace FromGoldenCombs.BlockEntities
             {
                 if (Api.World.BlockAccessor.GetBlock(Pos.UpCopy(), 0) is LangstrothStack) //If It's a SuperStack, Send To Next Stack
                 {
-                    (Api.World.BlockAccessor.GetBlockEntity(Pos.UpCopy()) as BELangstrothStack).TryPut(slot);
+                    (Api.World.BlockAccessor.GetBlockEntity(Pos.UpCopy()) as BELangstrothStack).TryPut(slot, (Api.World.BlockAccessor.GetBlockEntity(Pos.UpCopy()) as BELangstrothStack).GetMeshAngleRad());
 
                 }
                 else if (Api.World.BlockAccessor.GetBlock(Pos.UpCopy(), 0) is LangstrothCore) //If It's a LangstrothCore, create a new LangstrothStack
@@ -325,11 +436,20 @@ namespace FromGoldenCombs.BlockEntities
             else if (Api.World.BlockAccessor.GetBlock(Pos.UpCopy(), 0).BlockMaterial == EnumBlockMaterial.Air)
             {
                 Api.World.BlockAccessor.SetBlock(Api.World.GetBlock(new AssetLocation("fromgoldencombs", "langstrothstack-two-" + this.Block.Variant["side"])).BlockId, Pos.UpCopy());
-                TryPut(slot);
+                ((BELangstrothStack)Api.World.BlockAccessor.GetBlockEntity(Pos.UpCopy())).receiveMeshAngleRad(meshAngleRad);
+
+                TryPut(slot, GetMeshAngleRad());
             }
             updateMeshes();
             MarkDirty();
             return true;
+        }
+
+        public void receiveMeshAngleRad(float meshAngleRad)
+        {
+            MeshAngleRad = meshAngleRad;
+            updateMeshes();
+            MarkDirty(true);
         }
 
         //TryTake attemps to retrieve the contents of an Inventory Slot in the stack
@@ -452,7 +572,7 @@ namespace FromGoldenCombs.BlockEntities
         {
             //Receive a super from another source for placement.
             //Intended to function as a way for other stacks to send blocks to this stack.
-            TryPut(slot);
+            TryPut(slot, GetMeshAngleRad());
             //MarkDirty(true);
         }
 
@@ -838,7 +958,7 @@ namespace FromGoldenCombs.BlockEntities
         {
             base.ToTreeAttributes(tree);
 
-
+            tree.SetFloat("MeshAngleRad", MeshAngleRad);
             tree.SetInt("scanIteration", scanIteration);
 
             tree.SetInt("quantityNearbyFlowers", quantityNearbyFlowers);
@@ -863,6 +983,7 @@ namespace FromGoldenCombs.BlockEntities
 
             bool wasHarvestable = Harvestable;
 
+            MeshAngleRad = tree.GetFloat("MeshAngleRad");
             scanIteration = tree.GetInt("scanIteration");
             harvestableFrames = tree.GetInt("harvestableFrames");
             quantityNearbyFlowers = tree.GetInt("quantityNearbyFlowers");
@@ -943,21 +1064,23 @@ namespace FromGoldenCombs.BlockEntities
 
         protected override float[][] genTransformationMatrices()
         {
-
-            float[][] tfMatrices = new float[3][];
-            for (int index = 0; index <= 2; index++)
+            
+            tfMatrices = new float[Inventory.Count][];
+            Cuboidf[] selectionBoxes = (base.Block as LangstrothStack).selectionboxes;
+            if (selectionBoxes is null) return null;
+            for (int i = 0; i < Inventory.Count; i++)
             {
-                float x = 0;
-                float z = 0;
-                switch (this.Block.Variant["side"])
-                {
-                    case "east": x = 0; break;
-                    case "west": x = 1; z = 1; break;
-                    case "north": z = 1; break;
-                    case "south": x = 1; break;
-                }
-                tfMatrices[index] = new Matrixf().Translate(x, 0.3333f * index, z).RotateYDeg(this.Block.Shape.rotateY).Values;
+                Cuboidf obj = selectionBoxes[i];
+                //string cachemeshkey;
+                //if (!Inventory[i].Empty) cachemeshkey = this.getMeshCacheKey(Inventory[i].Itemstack);
+                float midX = obj.MidX;
+                float midY = 0f + (i * 0.3333f);
+                float midZ = obj.MidZ;
+                Vec3f vec3f = new Vec3f(midX, midY, midZ);
+                vec3f = new Matrixf().RotateY(MeshAngleRad).TransformVector(vec3f.ToVec4f(0f)).XYZ;
+                tfMatrices[i] = new Matrixf().Translate(vec3f.X, vec3f.Y, vec3f.Z).Translate(0.5f, 0.0f, 0.5f).RotateY(MeshAngleRad - MathF.PI).Values;
             }
+
             return tfMatrices;
         }
 

@@ -105,7 +105,9 @@ namespace FromGoldenCombs.Blocks
             bool num = base.DoPlaceBlock(world, byPlayer, blockSel, byItemStack);
             if (num && world.BlockAccessor.GetBlockEntity(blockSel.Position) is BEFrameRack beFrameRack2)
             {
+              
                 BlockPos blockPos = (blockSel.DidOffset ? blockSel.Position.AddCopy(blockSel.Face.Opposite) : blockSel.Position);
+                
                 double y = byPlayer.Entity.Pos.X - ((double)blockPos.X + blockSel.HitPosition.X);
                 double x = (double)(float)byPlayer.Entity.Pos.Z - ((double)blockPos.Z + blockSel.HitPosition.Z);
                 float num2 = (float)Math.Atan2(y, x);
@@ -188,6 +190,7 @@ namespace FromGoldenCombs.Blocks
                 base.GetDecal(world, pos, decalTexSource, ref decalModelData, ref blockModelData);
             }
         }
+
         public override void OnBeforeRender(ICoreClientAPI capi, ItemStack itemstack, EnumItemRenderTarget target, ref ItemRenderInfo renderinfo)
         {
             base.OnBeforeRender(capi, itemstack, target, ref renderinfo);
